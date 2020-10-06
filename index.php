@@ -19,7 +19,7 @@ try {
 //    $v = $Vchain->Accounts()->AccountsCode('0x5034aa590125b64023a0262112b98d72e3c8e40e');
 //    $v = $Vchain->Accounts()->AccountsStorage("0x5034aa590125b64023a0262112b98d72e3c8e40e","0x0000000000000000000000000000000000000000000000000000000000000001");
 //    $v = $Vchain->Blocks()->Blocks('best');
-    $v = $Vchain->Blocks()->Blocks('best');
+//    $v = $Vchain->Blocks()->Blocks('best');
     var_dump($v);
 }catch (Exception $e){
     echo $e->getMessage();
