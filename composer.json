@@ -1,0 +1,12 @@
+{
+  "require": {
+    "comely-io/http": "1.0.47"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vchain\\": [
+        "src/"
+      ]
+    }
+  }
+}
