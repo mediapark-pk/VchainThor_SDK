@@ -1,10 +1,10 @@
 <?php
 
-namespace Vchain;
+namespace VchainThor;
 
-use Vchain\Accounts\Accounts;
-use Vchain\Blocks\Blocks;
-use Vchain\Transaction\Transaction;
+use VchainThor\Accounts\Accounts;
+use VchainThor\Blocks\Blocks;
+use VchainThor\Transaction\Transaction;
 
 class Vchain
 {

@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Vchain;
+namespace VchainThor;
 
 use Comely\Http\Request;
-use Vchain\Exception\VchainAPIException;
+use Vchainthor\Exception\VchainAPIException;
 
 /**
  * Class HttpClient

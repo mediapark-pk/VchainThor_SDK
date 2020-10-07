@@ -1,8 +1,8 @@
 <?php
-namespace Vchain\Accounts;
+namespace VchainThor\Accounts;
 
-use Vchain\Exception\VchainAccountsException;
-use Vchain\HttpClient;
+use Vchainthor\Exception\VchainAccountsException;
+use VchainThor\HttpClient;
 
 class Accounts
 {

@@ -1,12 +1,13 @@
 {
   "require": {
-    "comely-io/http": "1.0.47"
+    "comely-io/http": "1.0.47",
+    "web3p/rlp": "^0.3.2",
+    "furqansiddiqui/ecdsa-php": "^0.2.0",
+    "deemru/blake2b": "^1.0"
   },
   "autoload": {
     "psr-4": {
-      "Vchain\\": [
-        "src/"
-      ]
+      "VchainThor\\": ["src/"]
     }
   }
 }

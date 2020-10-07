@@ -1,10 +1,8 @@
 <?php
-namespace Vchain\Blocks;
+namespace VchainThor\Blocks;
 
-
-use Vchain\Exception\VchainAPIException;
-use Vchain\Exception\VchainBlocksException;
-use Vchain\HttpClient;
+use Vchainthor\Exception\VchainBlocksException;
+use VchainThor\HttpClient;
 
 class Blocks{
     private HttpClient $http;

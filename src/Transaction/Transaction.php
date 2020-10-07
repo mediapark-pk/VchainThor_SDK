@@ -1,8 +1,8 @@
 <?php
-namespace Vchain\Transaction;
+namespace VchainThor\Transaction;
 
-use Vchain\Exception\VchainTransactionException;
-use Vchain\HttpClient;
+use Vchainthor\Exception\VchainTransactionException;
+use VchainThor\HttpClient;
 
 class Transaction{
     private HttpClient $http;
