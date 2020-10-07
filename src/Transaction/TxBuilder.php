@@ -3,20 +3,18 @@ declare(strict_types=1);
 
 namespace VchainThor\Transaction;
 
-use Comely\DataTypes\BcNumber;
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
 use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
 use VchainThor\Exception\IncompleteTxException;
-use VchainThor\Math\Integers;
 use VchainThor\RLP;
 
 class TxBuilder
 {
     /** @var int */
     private int $chainTag;
-    /** @var BcNumber */
-    private BcNumber $blockRef;
+    /** @var int */
+    private int $blockRef;
     /** @var int */
     private int $expiration;
 
@@ -53,17 +51,25 @@ class TxBuilder
         $this->chainTag = $chainTag;
     }
 
+//    /**
+//     * @param array $blockRef
+//     * @throws IncompleteTxException
+//     */
+//    public function setBlockRef(array $blockRef): void
+//    {
+//        $data='';
+//        foreach ($blockRef as $dt) {
+//            $data .=$this->encodeSingleByteInt($dt);
+//        }
+//        $this->blockRef = Integers::Unpack($data);
+//    }
     /**
-     * @param array $blockRef
+     * @param int blockRef
      * @throws IncompleteTxException
      */
-    public function setBlockRef(array $blockRef): void
+    public function setBlockRef(int $blockRef): void
     {
-        $data='';
-        foreach ($blockRef as $dt) {
-            $data .=$this->encodeSingleByteInt($dt);
-        }
-        $this->blockRef = Integers::Unpack($data);
+        $this->blockRef =$blockRef;
     }
 
     /**
