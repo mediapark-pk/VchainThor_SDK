@@ -27,12 +27,7 @@ try {
 //    $v = 7212818;
     echo $chose = $v['number'] + 18;
     echo '<br>';
-    echo dechex($chose);
-    echo '<br>';
-    echo $ch = \VchainThor\Math\Integers::Pack_UInt_LE($chose);
-    echo '<br>';
-    echo $ch = \VchainThor\Math\Integers::Pack_UInt_BE($chose);
-    exit();
+    $ch = \VchainThor\Math\Integers::Pack_UInt_BE($chose);
 //    $ch =   "6E0832";
     $ch=    str_pad($ch, 8, "0", STR_PAD_LEFT);
 //    exit();
@@ -43,6 +38,16 @@ try {
     $ch[]   =  0;
     $ch[]   =  0;
     $ch[]   =  0;
+//    var_dump($ch);
+//    echo '<br>';
+//    var_dump($ch[0],hexdec($ch[0]));
+//    echo '<br>';
+//    var_dump($ch[1],hexdec($ch[1]));
+//    echo '<br>';
+//    var_dump($ch[2],hexdec($ch[2]));
+//    echo '<br>';
+//    var_dump($ch[3],hexdec($ch[3]));
+//    echo '<br>';
 
     $ch2 = [];
     foreach($ch as $chi) {

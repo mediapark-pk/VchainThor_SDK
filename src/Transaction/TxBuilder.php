@@ -93,6 +93,7 @@ class TxBuilder
             }
         }
         $clauses['data'] =$data;
+//        $clauses['data'] =$clauses['data'];
         $this->clauses = $clauses;
     }
 
@@ -172,7 +173,7 @@ class TxBuilder
         }
         $clause1 = new RLP\RLPObject();
         $clause1->encodeHexString($this->clauses['to']);
-        $clause1->encodeInteger($this->clauses['value']);
+        $clause1->encodeInteger(pow($this->clauses['value'],18));
         if($this->clauses['data']) {
             $clause1->encodeHexString($this->clauses['data']);
         }else{
@@ -209,7 +210,7 @@ class TxBuilder
             throw new IncompleteTxException('Private Key is not Set');
         }
         $sign = $secp->sign($this->private_key,$b_msg);
-        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'01');
+        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'00');
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;
     }

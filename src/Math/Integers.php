@@ -65,7 +65,6 @@ class Integers
         if (strlen($hex) % 2 !== 0) {
             $hex = "0" . $hex;
         }
-
         return $hex;
     }
 
