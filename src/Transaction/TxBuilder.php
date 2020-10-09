@@ -151,7 +151,7 @@ class TxBuilder
      * @return string
      * @throws IncompleteTxException
      */
-    public function build_tx(){
+    public function build_tx_vta(){
         $rlp = new RLP();
 
         $txBodyObj = new RLP\RLPObject();
@@ -164,16 +164,87 @@ class TxBuilder
             throw new IncompleteTxException('BlockRef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->blockRef);
+
         if (!isset($this->chainTag)) {
             throw new IncompleteTxException('Expiration value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->expiration);
+
         if (!isset($this->clauses)) {
             throw new IncompleteTxException('Clause value is not set or is invalid');
         }
         $clause1 = new RLP\RLPObject();
         $clause1->encodeHexString($this->clauses['to']);
-        $clause1->encodeInteger(pow($this->clauses['value'],18));
+        $clause1->encodeInteger(($this->clauses['value'] * pow(10,18)));
+        if($this->clauses['data']) {
+            $clause1->encodeHexString($this->clauses['data']);
+        }else{
+            $clause1->encodeHexString('');
+        }
+        $clausesObj = new RLP\RLPObject();
+        $clausesObj->encodeObject($clause1);
+        $txBodyObj->encodeObject($clausesObj);
+        if (!isset($this->gasPriceCoef)) {
+            throw new IncompleteTxException('Gas Price Coef value is not set or is invalid');
+        }
+        $txBodyObj->encodeInteger($this->gasPriceCoef);
+        if (!isset($this->gas)) {
+            throw new IncompleteTxException('Gas value is not set or is invalid');
+        }
+        $txBodyObj->encodeInteger($this->gas);
+        if (!isset($this->dependsOn)) {
+            throw new IncompleteTxException('DependsOn value is not set or is invalid');
+        }
+        $txBodyObj->encodeString($this->dependsOn);
+        if (!isset($this->nonce)) {
+            throw new IncompleteTxException('Nonce value is not set or is invalid');
+        }
+        $txBodyObj->encodeInteger($this->nonce);
+        $txBodyObj->encodeObject(new RLP\RLPObject());
+        $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
+        $blk2b = new Blake2b();
+        $hash = $blk2b->hash($tx_encode);
+        $hash_tx = bin2hex($hash);
+        $base16_msg = new Base16();
+        $b_msg = $base16_msg->set($hash_tx);
+        $secp = new Secp256k1();
+        if (!isset($this->private_key)) {
+            throw new IncompleteTxException('Private Key is not Set');
+        }
+        $sign = $secp->sign($this->private_key,$b_msg);
+        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'00');
+        $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
+        return $tx_encode;
+    }
+
+    public function build_tx_SHA(){
+        $rlp = new RLP();
+
+        $txBodyObj = new RLP\RLPObject();
+        if (!isset($this->chainTag)) {
+            throw new IncompleteTxException('ChainTag value is not set or is invalid');
+        }
+        $txBodyObj->encodeInteger($this->chainTag);
+
+        if (!isset($this->blockRef)) {
+            throw new IncompleteTxException('BlockRef value is not set or is invalid');
+        }
+        $txBodyObj->encodeInteger($this->blockRef);
+
+        if (!isset($this->chainTag)) {
+            throw new IncompleteTxException('Expiration value is not set or is invalid');
+        }
+        $txBodyObj->encodeInteger($this->expiration);
+
+        if (!isset($this->clauses)) {
+            throw new IncompleteTxException('Clause value is not set or is invalid');
+        }
+        $clause1 = new RLP\RLPObject();
+        $clause1->encodeHexString($this->clauses['to']);
+        $clause1->encodeInteger($this->clauses['value']);
+        if (!isset($this->clauses['data']) || count($this->clauses['data'])!=3) {
+            throw new IncompleteTxException('Clause Data array must be set with Identity ,SHA token receiver and Value of SHA token');
+        }
         if($this->clauses['data']) {
             $clause1->encodeHexString($this->clauses['data']);
         }else{
