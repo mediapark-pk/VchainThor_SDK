@@ -5,8 +5,11 @@ namespace VchainThor\Transaction;
 
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
+use FurqanSiddiqui\BIP32\ECDSA\Curves;
 use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
+
 use VchainThor\Exception\IncompleteTxException;
+use VchainThor\Keccak;
 use VchainThor\RLP;
 
 class TxBuilder
@@ -36,6 +39,20 @@ class TxBuilder
     /** @var Base16 */
     private Base16 $private_key;
 
+    public static function DectoHex($int)
+    {
+        if ($int > 0xff)
+        {
+            throw new IncompleteTxException('Greater Then 256');
+        }
+        $hex = dechex($int);
+        if (strlen($hex) % 2 !== 0)
+        {
+            $hex = "0" . $hex;
+        }
+        return $hex;
+    }
+
     /**
      * @param Base16 $private
      */
@@ -51,18 +68,6 @@ class TxBuilder
         $this->chainTag = $chainTag;
     }
 
-//    /**
-//     * @param array $blockRef
-//     * @throws IncompleteTxException
-//     */
-//    public function setBlockRef(array $blockRef): void
-//    {
-//        $data='';
-//        foreach ($blockRef as $dt) {
-//            $data .=$this->encodeSingleByteInt($dt);
-//        }
-//        $this->blockRef = Integers::Unpack($data);
-//    }
     /**
      * @param int blockRef
      * @throws IncompleteTxException
@@ -84,16 +89,31 @@ class TxBuilder
      * @param array $clauses
      * @throws IncompleteTxException
      */
-    public function setClauses(array $clauses): void
+    public function setClauses(array $clauses,bool $ssh = false): void
     {
         $data = '';
-        if($clauses['data']){
-            foreach ($clauses['data'] as $dt) {
-                $data .=$this->encodeSingleByteInt($dt);
+        if($ssh){
+            $keccek_hash =  Keccak::hash($clauses['data'][0],256);
+            $first_8_keccek_hash = substr($keccek_hash,0,8);
+            $to = '';
+            if(substr($clauses['data'][1],0,2) == '0x')
+            {
+                $to = substr($clauses['data'][1],2);
+            }else{
+                $to = $clauses['data'][1];
+            }
+            $to_with_pad = str_pad($to,64,"0",STR_PAD_LEFT);
+            $value_power_hex = dechex($clauses['data'][2]*pow(10,18));
+            $value_send = str_pad($value_power_hex,64,"0",STR_PAD_LEFT);
+            $data = $first_8_keccek_hash.$to_with_pad.$value_send;
+        }else {
+            if ($clauses['data']) {
+                foreach ($clauses['data'] as $dt) {
+                    $data .= $this->encodeSingleByteInt($dt);
+                }
             }
         }
-        $clauses['data'] =$data;
-//        $clauses['data'] =$clauses['data'];
+        $clauses['data'] = $data;
         $this->clauses = $clauses;
     }
 
@@ -217,55 +237,63 @@ class TxBuilder
         return $tx_encode;
     }
 
-    public function build_tx_SHA(){
+    public function build_tx_SSH(){
         $rlp = new RLP();
-
         $txBodyObj = new RLP\RLPObject();
-        if (!isset($this->chainTag)) {
+        if (!isset($this->chainTag))
+        {
             throw new IncompleteTxException('ChainTag value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->chainTag);
-
-        if (!isset($this->blockRef)) {
+        if (!isset($this->blockRef))
+        {
             throw new IncompleteTxException('BlockRef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->blockRef);
-
-        if (!isset($this->chainTag)) {
+        if (!isset($this->chainTag))
+        {
             throw new IncompleteTxException('Expiration value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->expiration);
-
-        if (!isset($this->clauses)) {
+        if (!isset($this->clauses))
+        {
             throw new IncompleteTxException('Clause value is not set or is invalid');
         }
         $clause1 = new RLP\RLPObject();
         $clause1->encodeHexString($this->clauses['to']);
         $clause1->encodeInteger($this->clauses['value']);
-        if (!isset($this->clauses['data']) || count($this->clauses['data'])!=3) {
+        if (!isset($this->clauses['data']))
+        {
             throw new IncompleteTxException('Clause Data array must be set with Identity ,SHA token receiver and Value of SHA token');
         }
-        if($this->clauses['data']) {
+        if($this->clauses['data'])
+        {
             $clause1->encodeHexString($this->clauses['data']);
-        }else{
+        }
+        else
+        {
             $clause1->encodeHexString('');
         }
         $clausesObj = new RLP\RLPObject();
         $clausesObj->encodeObject($clause1);
         $txBodyObj->encodeObject($clausesObj);
-        if (!isset($this->gasPriceCoef)) {
+        if (!isset($this->gasPriceCoef))
+        {
             throw new IncompleteTxException('Gas Price Coef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->gasPriceCoef);
-        if (!isset($this->gas)) {
+        if (!isset($this->gas))
+        {
             throw new IncompleteTxException('Gas value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->gas);
-        if (!isset($this->dependsOn)) {
+        if (!isset($this->dependsOn))
+        {
             throw new IncompleteTxException('DependsOn value is not set or is invalid');
         }
         $txBodyObj->encodeString($this->dependsOn);
-        if (!isset($this->nonce)) {
+        if (!isset($this->nonce))
+        {
             throw new IncompleteTxException('Nonce value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->nonce);
@@ -277,11 +305,12 @@ class TxBuilder
         $base16_msg = new Base16();
         $b_msg = $base16_msg->set($hash_tx);
         $secp = new Secp256k1();
-        if (!isset($this->private_key)) {
+        if (!isset($this->private_key))
+        {
             throw new IncompleteTxException('Private Key is not Set');
         }
         $sign = $secp->sign($this->private_key,$b_msg);
-        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'00');
+        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'01');
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;
     }
