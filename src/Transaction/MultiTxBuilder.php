@@ -5,14 +5,12 @@ namespace VchainThor\Transaction;
 
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
-use FurqanSiddiqui\BIP32\ECDSA\Curves;
 use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
-
 use VchainThor\Exception\IncompleteTxException;
 use VchainThor\Keccak;
 use VchainThor\RLP;
 
-class TxBuilder
+class MultiTxBuilder
 {
     /** @var int */
     private int $chainTag;
@@ -114,7 +112,7 @@ class TxBuilder
             }
         }
         $clauses['data'] = $data;
-        $this->clauses = $clauses;
+        $this->clauses[] = $clauses;
     }
 
     /**
@@ -171,73 +169,7 @@ class TxBuilder
      * @return string
      * @throws IncompleteTxException
      */
-    public function build_tx_vta(){
-        $rlp = new RLP();
-
-        $txBodyObj = new RLP\RLPObject();
-        if (!isset($this->chainTag)) {
-            throw new IncompleteTxException('ChainTag value is not set or is invalid');
-        }
-        $txBodyObj->encodeInteger($this->chainTag);
-
-        if (!isset($this->blockRef)) {
-            throw new IncompleteTxException('BlockRef value is not set or is invalid');
-        }
-        $txBodyObj->encodeInteger($this->blockRef);
-
-        if (!isset($this->chainTag)) {
-            throw new IncompleteTxException('Expiration value is not set or is invalid');
-        }
-        $txBodyObj->encodeInteger($this->expiration);
-
-        if (!isset($this->clauses)) {
-            throw new IncompleteTxException('Clause value is not set or is invalid');
-        }
-        $clause1 = new RLP\RLPObject();
-        $clause1->encodeHexString($this->clauses['to']);
-        $clause1->encodeInteger(($this->clauses['value'] * pow(10,18)));
-        if($this->clauses['data']) {
-            $clause1->encodeHexString($this->clauses['data']);
-        }else{
-            $clause1->encodeHexString('');
-        }
-        $clausesObj = new RLP\RLPObject();
-        $clausesObj->encodeObject($clause1);
-        $txBodyObj->encodeObject($clausesObj);
-        if (!isset($this->gasPriceCoef)) {
-            throw new IncompleteTxException('Gas Price Coef value is not set or is invalid');
-        }
-        $txBodyObj->encodeInteger($this->gasPriceCoef);
-        if (!isset($this->gas)) {
-            throw new IncompleteTxException('Gas value is not set or is invalid');
-        }
-        $txBodyObj->encodeInteger($this->gas);
-        if (!isset($this->dependsOn)) {
-            throw new IncompleteTxException('DependsOn value is not set or is invalid');
-        }
-        $txBodyObj->encodeString($this->dependsOn);
-        if (!isset($this->nonce)) {
-            throw new IncompleteTxException('Nonce value is not set or is invalid');
-        }
-        $txBodyObj->encodeInteger($this->nonce);
-        $txBodyObj->encodeObject(new RLP\RLPObject());
-        $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
-        $blk2b = new Blake2b();
-        $hash = $blk2b->hash($tx_encode);
-        $hash_tx = bin2hex($hash);
-        $base16_msg = new Base16();
-        $b_msg = $base16_msg->set($hash_tx);
-        $secp = new Secp256k1();
-        if (!isset($this->private_key)) {
-            throw new IncompleteTxException('Private Key is not Set');
-        }
-        $sign = $secp->sign($this->private_key,$b_msg);
-        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'00');
-        $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
-        return $tx_encode;
-    }
-
-    public function build_tx_SSH(){
+    public function build_tx(){
         $rlp = new RLP();
         $txBodyObj = new RLP\RLPObject();
         if (!isset($this->chainTag))
@@ -259,23 +191,23 @@ class TxBuilder
         {
             throw new IncompleteTxException('Clause value is not set or is invalid');
         }
-        $clause1 = new RLP\RLPObject();
-        $clause1->encodeHexString($this->clauses['to']);
-        $clause1->encodeInteger($this->clauses['value']);
-        if (!isset($this->clauses['data']))
-        {
-            throw new IncompleteTxException('Clause Data array must be set with Identity ,SHA token receiver and Value of SHA token');
-        }
-        if($this->clauses['data'])
-        {
-            $clause1->encodeHexString($this->clauses['data']);
-        }
-        else
-        {
-            $clause1->encodeHexString('');
-        }
+
         $clausesObj = new RLP\RLPObject();
-        $clausesObj->encodeObject($clause1);
+        foreach ($this->clauses as $clse) {
+            $clause1 = new RLP\RLPObject();
+            $clause1->encodeHexString($clse['to']);
+            $clause1->encodeInteger($clse['value']);
+            if (!isset($clse['data'])) {
+                throw new IncompleteTxException('Data Array must be set');
+            }
+            if ($clse['data']) {
+                $clause1->encodeHexString($clse['data']);
+            } else {
+                $clause1->encodeHexString('');
+            }
+            $clausesObj->encodeObject($clause1);
+        }
+
         $txBodyObj->encodeObject($clausesObj);
         if (!isset($this->gasPriceCoef))
         {
@@ -311,13 +243,10 @@ class TxBuilder
         }
         echo '<pre>';
         $sign = $secp->sign($this->private_key,$b_msg);
-        var_dump($sign);
         $pointR = $sign->curvePointR();
 //        print_r($pointR);exit();
-        echo $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? 0 : 1;
-        echo '<br>';
-        echo $sigV = $this->chainTag * 2 + (35 + $parity);
-        echo '<br>';
+        $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? 0 : 1;
+        $sigV = $this->chainTag * 2 + (35 + $parity);
         var_dump($sign->r()->value().$sign->s()->value().$sigV);
 //        exit();
 //        print_r($sign);
