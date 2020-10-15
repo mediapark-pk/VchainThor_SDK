@@ -51,7 +51,7 @@ try {
     }
 
     $int = (int) Integers::Unpack($code)->value();
-
+    $tx->setChainTag(39);
     $tx->setBlockRef($int);
     $tx->setExpiration(18); //fix
 
