@@ -194,16 +194,17 @@ class MultiTxBuilder
 
         $clausesObj = new RLP\RLPObject();
         foreach ($this->clauses as $clse) {
+            $val = $clse['value']*pow( 10,18 );
             $clause1 = new RLP\RLPObject();
-            $clause1->encodeHexString($clse['to']);
-            $clause1->encodeInteger($clse['value']);
-            if (!isset($clse['data'])) {
+            $clause1->encodeHexString( $clse['to'] );
+            $clause1->encodeInteger( $val );
+            if (!isset( $clse['data'] )) {
                 throw new IncompleteTxException('Data Array must be set');
             }
-            if ($clse['data']) {
-                $clause1->encodeHexString($clse['data']);
+            if ( $clse['data'] ) {
+                $clause1->encodeHexString( $clse['data'] );
             } else {
-                $clause1->encodeHexString('');
+                $clause1->encodeHexString( '' );
             }
             $clausesObj->encodeObject($clause1);
         }
@@ -248,7 +249,7 @@ class MultiTxBuilder
         $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? 0 : 1;
         $sigV = $this->chainTag * 2 + (35 + $parity);
 //        var_dump($sign->r()->value().$sign->s()->value().dechex($sigV));exit();
-        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().dechex($sigV));
+        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'00');//dechex($sigV)
 //        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'01');
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;

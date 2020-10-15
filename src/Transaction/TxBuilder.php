@@ -300,7 +300,7 @@ class TxBuilder
         $txBodyObj->encodeObject(new RLP\RLPObject());
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         $blk2b = new Blake2b();
-        $hash = $blk2b->hash($tx_encode);
+        $hash = $blk2b->hash(hex2bin($tx_encode));
         $hash_tx = bin2hex($hash);
         $base16_msg = new Base16();
         $b_msg = $base16_msg->set($hash_tx);
@@ -309,21 +309,20 @@ class TxBuilder
         {
             throw new IncompleteTxException('Private Key is not Set');
         }
-        echo '<pre>';
         $sign = $secp->sign($this->private_key,$b_msg);
-        var_dump($sign);
+//        var_dump($sign);
         $pointR = $sign->curvePointR();
 //        print_r($pointR);exit();
-        echo $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? 0 : 1;
-        echo '<br>';
-        echo $sigV = $this->chainTag * 2 + (35 + $parity);
-        echo '<br>';
-        var_dump($sign->r()->value().$sign->s()->value().$sigV);
+        $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
+//        echo '<br>';
+//        echo $sigV = $this->chainTag * 2 + (35 + $parity);
+//        echo '<br>';
+//        var_dump($sign->r()->value().$sign->s()->value().$sigV);
 //        exit();
 //        print_r($sign);
 //        print_r($sign->r());
 //        exit();
-        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().$sigV);
+        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().$parity);
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;
     }

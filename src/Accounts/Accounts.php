@@ -16,7 +16,10 @@ class Accounts
         if ($address=="") {
             throw new VchainAccountsException("Address must not empty");
         }
-        return $this->http->sendRequest('accounts/'.$address);
+        $account =  $this->http->sendRequest('accounts/'.$address);
+        $account['balance'] = hexdec($account['balance'])/pow(10,18);
+        $account['energy'] = hexdec($account['energy'])/pow(10,18);
+        return $account;
     }
 
     public function AccountsCode(string $address){
