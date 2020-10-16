@@ -2,7 +2,7 @@
 declare(strict_types=1);
 
 use Comely\DataTypes\Buffer\Base16;
-use VchainThor\Transaction\TxBuilder;
+use VchainThor\Transaction\TxBuilderTwofunc;
 use VchainThor\Vchain;
 
 require_once "vendor/autoload.php";
@@ -115,7 +115,7 @@ try {
 //    echo $int = \VchainThor\Math\Integers::Unpack($code)->value();
 //    exit;
     $int = \VchainThor\Math\Integers::Unpack($code)->value();
-    $tx = new TxBuilder();
+    $tx = new TxBuilderTwofunc();
     $tx->setChainTag(39);
     $tx->setBlockRef((int)$int);
     $tx->setExpiration(18); //fix

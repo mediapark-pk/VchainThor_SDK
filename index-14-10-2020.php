@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 use Comely\DataTypes\Buffer\Base16;
 use VchainThor\Math\Integers;
-use VchainThor\Transaction\TxBuilder;
+use VchainThor\Transaction\TxBuilderTwofunc;
 use VchainThor\Vchain;
 
 require_once "vendor/autoload.php";
@@ -43,7 +43,7 @@ try {
         $ch2[]  =   $chi;
     }
 
-    $tx = new TxBuilder();
+    $tx = new TxBuilderTwofunc();
     $code = '';
     foreach ($ch2 as $a)
     {
