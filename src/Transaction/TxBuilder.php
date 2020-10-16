@@ -206,7 +206,6 @@ class TxBuilder
 
         $clausesObj = new RLP\RLPObject();
         foreach ($this->clauses as $clse) {
-
             $val = $clse['value']*pow( 10,18 );
             $clause1 = new RLP\RLPObject();
             $clause1->encodeHexString( $clse['to'] );
@@ -246,30 +245,25 @@ class TxBuilder
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         $blk2b = new Blake2b();
         $hash = $blk2b->hash(hex2bin($tx_encode));//afde
-        echo '<br>';
         $hash_tx = bin2hex($hash);
-//        print_r($hash_tx);echo '<br>';//exit();
         $base16_msg = new Base16();
         $b_msg = $base16_msg->set($hash_tx);
         $secp = new Secp256k1();
-        if (!isset($this->private_key))
-        {
+        if (!isset($this->private_key)) {
             throw new IncompleteTxException('Private Key is not Set');
         }
         $sign = $secp->sign($this->private_key,$b_msg);
         $pointR = $sign->curvePointR();
-        if($this->vta==1 && $this->sha==0) {
+//        if($this->vta=1 && $this->sha==0) {
             $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
-        }else if($this->vta>1 && $this->sha==0){
-            $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "01" : "00";
-        }else if($this->sha>0){
-            $parity = '00';
-        }
-
-//        $sigV = $this->chainTag * 2 + (35 + $parity);
-//        var_dump($sign->r()->value().$sign->s()->value().dechex($sigV));exit();
-        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().$parity);//dechex($sigV) //$parity
-//        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().'01');
+//        }
+//        else if($this->vta>1 && $this->sha==0){
+//            $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "01" : "00";
+//        }
+//        else if($this->sha>0){
+//            $parity = '00';
+//        }
+        $txBodyObj->encodeHexString($sign->r()->value().$sign->s()->value().$parity);
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;
     }
