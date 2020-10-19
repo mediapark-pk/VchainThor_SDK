@@ -72,9 +72,34 @@ class TxBuilderTwofunc
      * @param int blockRef
      * @throws IncompleteTxException
      */
-    public function setBlockRef(int $blockRef): void
+    public function setBlockRef(int $chose): void
     {
-        $this->blockRef =$blockRef;
+        $chose = $chose + 18;
+        $ch = Integers::Pack_UInt_BE($chose);
+        $ch =  str_pad($ch, 8, "0", STR_PAD_LEFT);
+        $ch =  str_split($ch, 2);
+        $ch[] =  0;
+        $ch[] =  0;
+        $ch[] =  0;
+        $ch[] =  0;
+        $ch2  = [];
+        foreach($ch as $chi)
+        {
+            if(is_string($chi))
+            {
+                $ch2[]  =   hexdec($chi);
+                continue;
+            }
+            $ch2[]  =   $chi;
+        }
+        $tx = new TxBuilder();
+        $code = '';
+        foreach ($ch2 as $a)
+        {
+            $code .= $tx::DectoHex($a);
+        }
+        $int = (int) Integers::Unpack($code)->value();
+        $this->blockRef =$int;
     }
 
     /**
