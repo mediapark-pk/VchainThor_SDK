@@ -39,10 +39,10 @@ try {
 //    $tx->setBlockRef(7307837);
     $tx->setExpiration(18); //fix
     $tx->setClauses(array('to' => '0x3D7f2E12945987aD44CB7d06CE420aF23948a290', "value" => 1, 'data' => array(0))); //VTE
-//    $tx->setClauses(array('to' => '0x3D7f2E12945987aD44CB7d06CE420aF23948a290', "value" => 1, 'data' => array(0))); //VTE
-    //9fdee3753061cc9033f8bcfb9fd81c18cc137f05
-    $tx->setClauses(array('to' => '0xa1bcfa20a82eca70a5af5420b11bc53a279024ec', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1')),true); //0x0a82c9083a3f16c9837295b5caf21656e84cfda5 //smart contract
     $tx->setClauses(array('to' => '0x3D7f2E12945987aD44CB7d06CE420aF23948a290', "value" => 1, 'data' => array(0))); //VTE
+    //9fdee3753061cc9033f8bcfb9fd81c18cc137f05
+//    $tx->setClauses(array('to' => '0xa1bcfa20a82eca70a5af5420b11bc53a279024ec', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1')),true); //0x0a82c9083a3f16c9837295b5caf21656e84cfda5 //smart contract
+//    $tx->setClauses(array('to' => '0x3D7f2E12945987aD44CB7d06CE420aF23948a290', "value" => 1, 'data' => array(0))); //VTE
 //    $tx->setClauses(array('to' => '0xa1bcfa20a82eca70a5af5420b11bc53a279024ec', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1')),true); //0x0a82c9083a3f16c9837295b5caf21656e84cfda5 //smart contract
 //    $tx->setClauses(array('to' => '0xa1bcfa20a82eca70a5af5420b11bc53a279024ec', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1')),true); //0x0a82c9083a3f16c9837295b5caf21656e84cfda5 //smart contract
     $tx->setGasPriceCoef(0);

@@ -281,24 +281,26 @@ class TxBuilder
 //        if($this->vta==1 && $this->sha==0) {
         $bits = gmp_strval($pointR->y(), 2);
         var_dump($bits);
+        echo '<br>';
 
-        $bits1 = str_replace("0", "", $bits);
-        var_dump($bits1);
-        var_dump(strlen($bits1));
-        $bits0 = str_replace("1", "", $bits);
-        var_dump($bits0);
-        var_dump(strlen($bits0));
-
-        $parity ='00';
-        if(strlen($bits1)%2==0 && strlen($bits0)%2==0){
-            $parity = '00';
-        }else if(strlen($bits1)%2!=0 && strlen($bits0)%2!=0){
-            $parity = '00';
-        }else{
-            $parity = '01';
-        }
-
-//        $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
+//        $bits1 = str_replace("0", "", $bits);
+//        var_dump($bits1);
+////        var_dump(strlen($bits1));
+//        echo '<br>';
+////        $bits0 = str_replace("1", "", $bits);
+////        var_dump($bits0);
+////        var_dump(strlen($bits0));
+//        echo '<br>';
+//        $parity ='';
+//        if(strlen($bits1)%2==0){
+//            $parity = '00';
+//        }else{
+//            $parity = '01';
+//        }
+        echo '<br>';
+        print_r($pointR->y());
+        echo '<br>';
+        $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
 //        $parity = strlen(str_replace("1", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
 //        }
 //        else if($this->vta>1 && $this->sha==0){
