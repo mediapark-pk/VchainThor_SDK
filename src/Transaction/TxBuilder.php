@@ -6,6 +6,7 @@ namespace VchainThor\Transaction;
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
 use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
+use FurqanSiddiqui\ECDSA\ECC\Math;
 use VchainThor\Exception\IncompleteTxException;
 use VchainThor\Keccak;
 use VchainThor\Math\Integers;
@@ -276,12 +277,16 @@ class TxBuilder
         if (!isset($this->private_key)) {
             throw new IncompleteTxException('Private Key is not Set');
         }
+
+        $pub_key    =   $secp->getPublicKey($this->private_key);
         $sign = $secp->sign($this->private_key, $b_msg);
-        $pointR = $sign->curvePointR();
-//        if($this->vta==1 && $this->sha==0) {
-        $bits = gmp_strval($pointR->y(), 2);
-        var_dump($bits);
-        echo '<br>';
+        $flag   =   $secp->findRecoveryId($pub_key, $sign, $b_msg, true);
+
+//        $pointR = $sign->curvePointR();
+////        if($this->vta==1 && $this->sha==0) {
+//        $bits = gmp_strval($pointR->y(), 2);
+//        var_dump($bits);
+//        echo '<br>';
 
 //        $bits1 = str_replace("0", "", $bits);
 //        var_dump($bits1);
@@ -297,10 +302,11 @@ class TxBuilder
 //        }else{
 //            $parity = '01';
 //        }
-        echo '<br>';
-        print_r($pointR->y());
-        echo '<br>';
-        $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
+//        echo '<br>';
+//        print_r($pointR->y());
+//        echo '<br>';
+//        $parity1 = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
+//        $parity2 = strlen(str_replace("0", "", gmp_strval(gmp_init($sign->r()->value() . $sign->s()->value(), 16), 2))) % 2 === 0 ? "00" : "01";
 //        $parity = strlen(str_replace("1", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
 //        }
 //        else if($this->vta>1 && $this->sha==0){
@@ -309,7 +315,10 @@ class TxBuilder
 //        else if($this->sha>0){
 //            $parity = '00';
 //        }
-        $txBodyObj->encodeHexString($sign->r()->value() . $sign->s()->value() . $parity);
+
+        var_dump($flag);
+        $v = $flag - 31 === 0 ? "00" : "01";
+        $txBodyObj->encodeHexString($sign->r()->value() . $sign->s()->value() . $v);
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;
     }
