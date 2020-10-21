@@ -12,14 +12,14 @@ class Accounts
         $this->http = $http;
     }
 
-    public function VTA_VTHO_SHA(string $address):array
+    public function GetVTA_VTHO_SHA(string $address):array
     {
         $vta = $this->AccountsAddress($address);
         $sha = $this->SHaAccountaddress($address);
         return array('VET balance'=>$vta['balance'],'VTHO (energy)'=>$vta['energy'],'SHA balance'=>$sha);
     }
 
-    public function SHaAccountaddress(string $address):float
+    public function SHaAccountAddress(string $address):float
     {
         if(substr($address,0,2)=='0x'){
             $address = substr($address,2);

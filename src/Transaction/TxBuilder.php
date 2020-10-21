@@ -5,8 +5,8 @@ namespace VchainThor\Transaction;
 
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
+use Exception;
 use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
-use FurqanSiddiqui\ECDSA\ECC\Math;
 use VchainThor\Exception\IncompleteTxException;
 use VchainThor\Keccak;
 use VchainThor\Math\Integers;
@@ -20,34 +20,24 @@ class TxBuilder
     private int $blockRef;
     /** @var int */
     private int $expiration;
-
     /**@var array */
     private array $clauses;
-
     /** @var int */
     private int $gasPriceCoef;
-
     /** @var int */
     private int $gas;
-
     /** @var string|null */
     private ?string $dependsOn;
-
     /** @var int */
     private int $nonce;
-
     /** @var Base16 */
     private Base16 $private_key;
 
-    private int $sha;
-    private int $vta;
-
-    public function __construct()
-    {
-        $this->sha = 0;
-        $this->vta = 0;
-    }
-
+    /**
+     * @param $int
+     * @return string
+     * @throws IncompleteTxException
+     */
     public static function DectoHex($int)
     {
         if ($int > 0xff) {
@@ -60,6 +50,10 @@ class TxBuilder
         return $hex;
     }
 
+    /**
+     * @param int $length
+     * @return int
+     */
     function randomNumber(int $length): int
     {
         $result = '';
@@ -89,73 +83,77 @@ class TxBuilder
      * @param int blockRef
      * @throws IncompleteTxException
      */
-    public function setBlockRef(int $chose): void
+    public function setBlockRef(int $CurrentblockNumber): void
     {
-        echo $chose = $chose + 18;
-        $ch = Integers::Pack_UInt_BE($chose);
+        $NextBlockNumber = $CurrentblockNumber + 18;
+        $ch = Integers::Pack_UInt_BE($NextBlockNumber);
         $ch = str_pad($ch, 8, "0", STR_PAD_LEFT);
         $ch = str_split($ch, 2);
         $ch[] = 0;
         $ch[] = 0;
         $ch[] = 0;
         $ch[] = 0;
-        $ch2 = [];
+        $dec_array = [];
         foreach ($ch as $chi) {
             if (is_string($chi)) {
-                $ch2[] = hexdec($chi);
+                $dec_array[] = hexdec($chi);
                 continue;
             }
-            $ch2[] = $chi;
+            $dec_array[] = $chi;
         }
         $tx = new TxBuilder();
         $code = '';
-        foreach ($ch2 as $a) {
+        foreach ($dec_array as $a) {
             $code .= $tx::DectoHex($a);
         }
         $int = (int)Integers::Unpack($code)->value();
         $this->blockRef = $int;
     }
 
-    /**
-     * @param int $expiration
-     */
-    public function setExpiration(int $expiration): void
+    public function setExpiration(): void
     {
-        $this->expiration = $expiration;
+        $this->expiration = 18;
     }
 
     /**
-     * @param array $clauses
+     * @param string $to
+     * @param int $amount
      * @throws IncompleteTxException
      */
-    public function setClauses(array $clauses, bool $ssh = false): void
+    public function setClausesVET(string $to,int $amount): void
     {
+        $clauses = array('to' => $to, "value" => $amount, 'data' => array(0));
         $data = '';
-        if ($ssh) {
-            $this->sha++;
-            $this->loop = 2;
-            $keccek_hash = Keccak::hash($clauses['data'][0], 256);
-            $first_8_keccek_hash = substr($keccek_hash, 0, 8);
-            $to = '';
-            if (substr($clauses['data'][1], 0, 2) == '0x') {
-                $to = substr($clauses['data'][1], 2);
-            } else {
-                $to = $clauses['data'][1];
-            }
-            $to_with_pad = str_pad($to, 64, "0", STR_PAD_LEFT);
-            $value_power_hex = dechex($clauses['data'][2] * pow(10, 18));
-            $value_send = str_pad($value_power_hex, 64, "0", STR_PAD_LEFT);
-            $data = $first_8_keccek_hash . $to_with_pad . $value_send;
-        } else {
-            $this->vta++;
-            if ($clauses['data']) {
-                foreach ($clauses['data'] as $dt) {
-                    $data .= $this->encodeSingleByteInt($dt);
-                }
+        if ($clauses['data']) {
+            foreach ($clauses['data'] as $dt) {
+                $data .= $this->encodeSingleByteInt($dt);
             }
         }
         $clauses['data'] = $data;
         $this->clauses[] = $clauses;
+    }
+
+    /**
+     * @param string $to
+     * @param int $amount
+     * @throws Exception
+     */
+    public function setClausesSHA(string $to,int $amount):void
+    {
+        $clauses_data = array('to' => '0xa1bcfa20a82eca70a5af5420b11bc53a279024ec', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1'));
+        $keccek_hash = Keccak::hash($clauses_data['data'][0], 256);
+        $first_8_keccek_hash = substr($keccek_hash, 0, 8);
+        if (substr($to, 0, 2) == '0x') {
+            $to = substr($clauses_data['data'][1], 2);
+        } else {
+            $to = $clauses_data['data'][1];
+        }
+        $to_with_pad = str_pad($to, 64, "0", STR_PAD_LEFT);
+        $value_power_hex = dechex($amount * pow(10, 18));
+        $value_send = str_pad($value_power_hex, 64, "0", STR_PAD_LEFT);
+        $data = $first_8_keccek_hash . $to_with_pad . $value_send;
+        $clauses_data['data'] = $data;
+        $this->clauses[] = $clauses_data;
     }
 
     /**
@@ -182,13 +180,9 @@ class TxBuilder
         $this->dependsOn = $dependsOn;
     }
 
-    /**
-     * @param int $nonce
-     */
     public function setNonce(): void
     {
-        $this->nonce = $this->randomNumber(3);
-//        $this->nonce = 148;
+        $this->nonce = $this->randomNumber(6);
     }
 
     /**
@@ -250,19 +244,23 @@ class TxBuilder
             $clausesObj->encodeObject($clause1);
         }
         $txBodyObj->encodeObject($clausesObj);
-        if (!isset($this->gasPriceCoef)) {
+        if (!isset($this->gasPriceCoef))
+        {
             throw new IncompleteTxException('Gas Price Coef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->gasPriceCoef);
-        if (!isset($this->gas)) {
+        if (!isset($this->gas))
+        {
             throw new IncompleteTxException('Gas value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->gas);
-        if (!isset($this->dependsOn)) {
+        if (!isset($this->dependsOn))
+        {
             throw new IncompleteTxException('DependsOn value is not set or is invalid');
         }
         $txBodyObj->encodeString($this->dependsOn);
-        if (!isset($this->nonce)) {
+        if (!isset($this->nonce))
+        {
             throw new IncompleteTxException('Nonce value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->nonce);
@@ -277,46 +275,9 @@ class TxBuilder
         if (!isset($this->private_key)) {
             throw new IncompleteTxException('Private Key is not Set');
         }
-
         $pub_key    =   $secp->getPublicKey($this->private_key);
         $sign = $secp->sign($this->private_key, $b_msg);
         $flag   =   $secp->findRecoveryId($pub_key, $sign, $b_msg, true);
-
-//        $pointR = $sign->curvePointR();
-////        if($this->vta==1 && $this->sha==0) {
-//        $bits = gmp_strval($pointR->y(), 2);
-//        var_dump($bits);
-//        echo '<br>';
-
-//        $bits1 = str_replace("0", "", $bits);
-//        var_dump($bits1);
-////        var_dump(strlen($bits1));
-//        echo '<br>';
-////        $bits0 = str_replace("1", "", $bits);
-////        var_dump($bits0);
-////        var_dump(strlen($bits0));
-//        echo '<br>';
-//        $parity ='';
-//        if(strlen($bits1)%2==0){
-//            $parity = '00';
-//        }else{
-//            $parity = '01';
-//        }
-//        echo '<br>';
-//        print_r($pointR->y());
-//        echo '<br>';
-//        $parity1 = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
-//        $parity2 = strlen(str_replace("0", "", gmp_strval(gmp_init($sign->r()->value() . $sign->s()->value(), 16), 2))) % 2 === 0 ? "00" : "01";
-//        $parity = strlen(str_replace("1", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "00" : "01";
-//        }
-//        else if($this->vta>1 && $this->sha==0){
-//            $parity = strlen(str_replace("0", "", gmp_strval($pointR->y(), 2))) % 2 === 0 ? "01" : "00";
-//        }
-//        else if($this->sha>0){
-//            $parity = '00';
-//        }
-
-        var_dump($flag);
         $v = $flag - 31 === 0 ? "00" : "01";
         $txBodyObj->encodeHexString($sign->r()->value() . $sign->s()->value() . $v);
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
