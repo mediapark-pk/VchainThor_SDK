@@ -16,19 +16,20 @@ try {
     $account = $Vchain->Accounts()->SHaAccountAddress('9fdee3753061cc9033f8bcfb9fd81c18cc137f05');
     $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
 
-    $v = $Vchain->Blocks()->Blocks('best');
+    $bestBlock = $Vchain->Blocks()->Blocks('best');
+    echo $bestBlock['number']+18;
     $tx = new TxBuilder();
     $tx->setChainTag(39);
-    $tx->setBlockRef($v['number']);
+    $tx->setBlockRef($bestBlock['number']);
     $tx->setExpiration(); //fix
-    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1); //VTE
-    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1); //VTE
-    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1); //SHA
-    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1); //SHA
+    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
+    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
+    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
     $tx->setGasPriceCoef(0);
-    $tx->setGas(958000 );
+    $tx->setGas(21005 );
     $tx->setDependsOn("");
-    $tx->setNonce(); //random genrated by code
+    $tx->setNonce();
     $privat_key = 'afc16047f43a67086dd73046ed63851607b943bbc9373bd00f017cde1b42365b';
     $base16_private = new Base16();
     $b_pri = $base16_private->set($privat_key);

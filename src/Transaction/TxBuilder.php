@@ -32,6 +32,25 @@ class TxBuilder
     private int $nonce;
     /** @var Base16 */
     private Base16 $private_key;
+    /** @var int */
+    private int $SHA;
+    /** @var int */
+    private int $SHAGasPrice;
+    /** @var int */
+    private int $VET;
+    /** @var int */
+    private int $VETGasPrice;
+
+    /**
+     * TxBuilder constructor.
+     */
+    public function __construct()
+    {
+        $this->VET = 0;
+        $this->SHA = 0;
+        $this->VETGasPrice = 21005;
+        $this->SHAGasPrice = 102740;
+    }
 
     /**
      * @param $int
@@ -110,9 +129,9 @@ class TxBuilder
         $this->blockRef = $int;
     }
 
-    public function setExpiration(): void
+    public function setExpiration(int $expiration=18): void
     {
-        $this->expiration = 18;
+        $this->expiration = $expiration;
     }
 
     /**
@@ -122,6 +141,7 @@ class TxBuilder
      */
     public function setClausesVET(string $to,int $amount): void
     {
+        $this->VET++;
         $clauses = array('to' => $to, "value" => $amount, 'data' => array(0));
         $data = '';
         if ($clauses['data']) {
@@ -140,13 +160,12 @@ class TxBuilder
      */
     public function setClausesSHA(string $to,int $amount):void
     {
+        $this->SHA++;
         $clauses_data = array('to' => '0xa1bcfa20a82eca70a5af5420b11bc53a279024ec', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1'));
         $keccek_hash = Keccak::hash($clauses_data['data'][0], 256);
         $first_8_keccek_hash = substr($keccek_hash, 0, 8);
         if (substr($to, 0, 2) == '0x') {
-            $to = substr($clauses_data['data'][1], 2);
-        } else {
-            $to = $clauses_data['data'][1];
+            $to = substr($to, 2);
         }
         $to_with_pad = str_pad($to, 64, "0", STR_PAD_LEFT);
         $value_power_hex = dechex($amount * pow(10, 18));
@@ -182,7 +201,7 @@ class TxBuilder
 
     public function setNonce(): void
     {
-        $this->nonce = $this->randomNumber(6);
+        $this->nonce = $this->randomNumber(12);
     }
 
     /**
@@ -219,7 +238,7 @@ class TxBuilder
             throw new IncompleteTxException('BlockRef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->blockRef);
-        if (!isset($this->chainTag)) {
+        if (!isset($this->expiration)) {
             throw new IncompleteTxException('Expiration value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->expiration);
@@ -249,9 +268,17 @@ class TxBuilder
             throw new IncompleteTxException('Gas Price Coef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->gasPriceCoef);
+        
+        if($this->VET>0 && $this->SHA==0){
+            $this->gas = $this->VETGasPrice * $this->VET;
+        }else if($this->VET==0 && $this->SHA>0){
+            $this->gas = $this->SHAGasPrice * $this->SHA;
+        }else if($this->VET>0 && $this->SHA>0){
+            $this->gas = ($this->SHAGasPrice * $this->SHA)+($this->VETGasPrice * $this->VET);
+        }
         if (!isset($this->gas))
         {
-            throw new IncompleteTxException('Gas value is not set or is invalid');
+            throw new IncompleteTxException('Gas value is not set');
         }
         $txBodyObj->encodeInteger($this->gas);
         if (!isset($this->dependsOn))
@@ -282,5 +309,6 @@ class TxBuilder
         $txBodyObj->encodeHexString($sign->r()->value() . $sign->s()->value() . $v);
         $tx_encode = $txBodyObj->getRLPEncoded($rlp)->toString();
         return $tx_encode;
+
     }
 }
