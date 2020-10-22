@@ -4,13 +4,20 @@
     "web3p/rlp": "^0.3.2",
     "furqansiddiqui/ecdsa-php": "^0.2.0",
     "deemru/blake2b": "^1.0",
-    "furqansiddiqui/ecdsa-php": "^0.2.0",
     "furqansiddiqui/bip39-mnemonic-php": "^0.1.3",
-    "furqansiddiqui/bip32-keypair-php": "dev-master#57ec344"
+    "furqansiddiqui/bip32-keypair-php": "dev-master#57ec344",
+    "php-64bit": "^7.4",
+    "ext-openssl": "*",
+    "ext-gmp": "*",
+    "ext-bcmath": "*",
+    "ext-curl": "*",
+    "ext-json": "*",
+    "comely-io/data-types": "^1.0.34"
   },
   "autoload": {
     "psr-4": {
-      "VchainThor\\": ["src/"]
+      "VchainThor\\": ["src/"],
+      "FurqanSiddiqui\\Ethereum\\": ["ethereum/"]
     }
   }
 }

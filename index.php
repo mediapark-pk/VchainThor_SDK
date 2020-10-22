@@ -13,15 +13,24 @@ $port = 8669;
 
 $Vchain = new Vchain($localUrl, $port);
 try {
+//    $eth = new \FurqanSiddiqui\Ethereum\Ethereum();
+//    $prv = $eth->keyPairs()->privateKeyFromEntropy(hash("sha256","whocares"));
+//    var_dump($prv->base16()->value());
+//    exit();
+//    $eth = new \FurqanSiddiqui\Ethereum\Ethereum();
+//    $prv1 = $eth->keyPairs()->privateKeyFromEntropy(hash("sha256","whocares"));
+//    var_dump($prv1);
+//    exit();
+
 //    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
 //    var_dump($account);exit();
 //    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
 
-    $private_key = new \FurqanSiddiqui\Ethereum\KeyPair\KeyPairFactory();
-    $pri = $private_key->generateSecurePrivateKey();
-    var_dump($pri);
-
-    exit();
+//    $private_key = new \FurqanSiddiqui\Ethereum\KeyPair\KeyPairFactory();
+//    $pri = $private_key->generateSecurePrivateKey();
+//    var_dump($pri);
+//
+//    exit();
     $bestBlock = $Vchain->Blocks()->Blocks('best');
     echo $bestBlock['number']+18;
     $tx = new TxBuilder();
