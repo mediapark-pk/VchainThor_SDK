@@ -13,9 +13,15 @@ $port = 8669;
 
 $Vchain = new Vchain($localUrl, $port);
 try {
-    $account = $Vchain->Accounts()->SHaAccountAddress('9fdee3753061cc9033f8bcfb9fd81c18cc137f05');
-    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
+//    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
+//    var_dump($account);exit();
+//    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
 
+    $private_key = new \FurqanSiddiqui\Ethereum\KeyPair\KeyPairFactory();
+    $pri = $private_key->generateSecurePrivateKey();
+    var_dump($pri);
+
+    exit();
     $bestBlock = $Vchain->Blocks()->Blocks('best');
     echo $bestBlock['number']+18;
     $tx = new TxBuilder();
@@ -23,9 +29,11 @@ try {
     $tx->setBlockRef($bestBlock['number']);
     $tx->setExpiration(); //fix
     $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
-    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
+//    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
+//    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+//    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
     $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
-    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+    $tx->setClausesVTHO('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
     $tx->setGasPriceCoef(0);
     $tx->setGas(21005 );
     $tx->setDependsOn("");

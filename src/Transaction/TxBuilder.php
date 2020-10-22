@@ -40,6 +40,10 @@ class TxBuilder
     private int $VET;
     /** @var int */
     private int $VETGasPrice;
+    /** @var int */
+    private int $VTHO;
+    /** @var int */
+    private int $VTHOGasPrice;
 
     /**
      * TxBuilder constructor.
@@ -48,8 +52,10 @@ class TxBuilder
     {
         $this->VET = 0;
         $this->SHA = 0;
+        $this->VTHO = 0;
         $this->VETGasPrice = 21005;
         $this->SHAGasPrice = 102740;
+        $this->VTHOGasPrice = 100000;
     }
 
     /**
@@ -175,6 +181,23 @@ class TxBuilder
         $this->clauses[] = $clauses_data;
     }
 
+    public function setClausesVTHO(string $to,int $amount):void
+    {
+        $this->VTHO++;
+        $clauses_data = array('to' => '0x0000000000000000000000000000456e65726779', "value" => 0, 'data' => array("transfer(address,uint256)",'0x3D7f2E12945987aD44CB7d06CE420aF23948a290','1'));
+        $keccek_hash = Keccak::hash($clauses_data['data'][0], 256);
+        $first_8_keccek_hash = substr($keccek_hash, 0, 8);
+        if (substr($to, 0, 2) == '0x') {
+            $to = substr($to, 2);
+        }
+        $to_with_pad = str_pad($to, 64, "0", STR_PAD_LEFT);
+        $value_power_hex = dechex($amount * pow(10, 18));
+        $value_send = str_pad($value_power_hex, 64, "0", STR_PAD_LEFT);
+        $data = $first_8_keccek_hash . $to_with_pad . $value_send;
+        $clauses_data['data'] = $data;
+        $this->clauses[] = $clauses_data;
+    }
+
     /**
      * @param int $gasPriceCoef
      */
@@ -268,15 +291,20 @@ class TxBuilder
             throw new IncompleteTxException('Gas Price Coef value is not set or is invalid');
         }
         $txBodyObj->encodeInteger($this->gasPriceCoef);
-        
-        if($this->VET>0 && $this->SHA==0){
-            $this->gas = $this->VETGasPrice * $this->VET;
-        }else if($this->VET==0 && $this->SHA>0){
-            $this->gas = $this->SHAGasPrice * $this->SHA;
-        }else if($this->VET>0 && $this->SHA>0){
-            $this->gas = ($this->SHAGasPrice * $this->SHA)+($this->VETGasPrice * $this->VET);
+
+        if(($this->VET+$this->SHA+$this->VTHO)>4){
+            throw new IncompleteTxException('Cannot Set More Then 4 Clause');
         }
-        if (!isset($this->gas))
+        if($this->VET>0 && $this->SHA==0 && $this->VTHO==0){
+            $this->gas = $this->VETGasPrice * $this->VET;
+        }else if($this->VET==0 && $this->SHA>0 && $this->VTHO==0){
+            $this->gas = $this->SHAGasPrice * $this->SHA;
+        }else if($this->VET==0 && $this->SHA==0 && $this->VTHO>0){
+            $this->gas = $this->VTHOGasPricee * $this->VTHO;
+        }else{
+            $this->gas = ($this->SHAGasPrice * $this->SHA)+($this->VETGasPrice * $this->VET)+($this->VTHOGasPrice * $this->VTHO);
+        }
+        if (!isset($this->gas) && $this->gas==0)
         {
             throw new IncompleteTxException('Gas value is not set');
         }
