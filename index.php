@@ -37,12 +37,12 @@ try {
     $tx->setChainTag(39);
     $tx->setBlockRef($bestBlock['number']);
     $tx->setExpiration(); //fix
-    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
 //    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
-//    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
-//    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
-    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+//    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
     $tx->setClausesVTHO('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+//    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
+//    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
     $tx->setGasPriceCoef(0);
     $tx->setGas(21005 );
     $tx->setDependsOn("");
@@ -54,6 +54,9 @@ try {
     echo '<pre>';
     $v = $tx->build_tx();
     var_dump($v);
+    echo '<pre>';
+    $re = $Vchain->Tranaction()->TransactionPost($v);
+    var_dump($re);
 } catch (Exception $e) {
     echo $e->getMessage();
 }

@@ -25,10 +25,11 @@ class Transaction{
         return $this->http->sendRequest('transactions/'.$id."/receipt");
     }
 
-    public function TransactionPost(array $param){
-        if (!$param) {
+    public function TransactionPost(string $encodedtx){
+        if (!$encodedtx) {
             throw new VchainTransactionException("array must not empty");
         }
+        $param = array("raw"=> '0x'.$encodedtx);
         return $this->http->sendRequest('transactions',$param,[],"POST");
     }
 }

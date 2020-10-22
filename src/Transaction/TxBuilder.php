@@ -300,7 +300,7 @@ class TxBuilder
         }else if($this->VET==0 && $this->SHA>0 && $this->VTHO==0){
             $this->gas = $this->SHAGasPrice * $this->SHA;
         }else if($this->VET==0 && $this->SHA==0 && $this->VTHO>0){
-            $this->gas = $this->VTHOGasPricee * $this->VTHO;
+            $this->gas = $this->VTHOGasPrice * $this->VTHO;
         }else{
             $this->gas = ($this->SHAGasPrice * $this->SHA)+($this->VETGasPrice * $this->VET)+($this->VTHOGasPrice * $this->VTHO);
         }

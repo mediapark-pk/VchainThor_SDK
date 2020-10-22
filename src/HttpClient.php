@@ -79,6 +79,7 @@ class HttpClient
         // Send The Request
         $res = $request->send();
         $errCode = $res->code();
+        echo $errCode;
         if ($errCode !== 200) {
             $errMsg = $res->body()->value();
             if ($errMsg) {
