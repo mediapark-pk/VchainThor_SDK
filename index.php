@@ -13,16 +13,20 @@ $port = 8669;
 
 $Vchain = new Vchain($localUrl, $port);
 try {
-//    $eth = new \FurqanSiddiqui\Ethereum\Ethereum();
-//    $prv = $eth->keyPairs()->privateKeyFromEntropy(hash("sha256","whocares"));
-//    var_dump($prv->base16()->value());
-//    exit();
+    $eth = new \FurqanSiddiqui\Ethereum\Ethereum();
+    $prv = $eth->keyPairs()->privateKeyFromEntropy(hash("sha256","whoc1are1s"));
+    echo '<h1>Private Key</h1>';
+    var_dump($prv->base16()->value());
+    echo '<h1>Public Key</h1>';
+    var_dump($prv->publicKey()->getAccountAddress());
+    exit();
 //    $eth = new \FurqanSiddiqui\Ethereum\Ethereum();
 //    $prv1 = $eth->keyPairs()->privateKeyFromEntropy(hash("sha256","whocares"));
 //    var_dump($prv1);
 //    exit();
 
-//    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
+//    $account = $Vchain->Accounts()->GetVetVthoSha('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
+//    $account = $Vchain->Accounts()->GetVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
 //    var_dump($account);exit();
 //    $account = $Vchain->Accounts()->GetVTA_VTHO_SHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290');
 
@@ -38,7 +42,7 @@ try {
     $tx->setBlockRef($bestBlock['number']);
     $tx->setExpiration(); //fix
 //    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
-//    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
+    $tx->setClausesVET('0x3D7f2E12945987aD44CB7d06CE420aF23948a290', 1);
     $tx->setClausesVTHO('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
     $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);
 //    $tx->setClausesSHA('0x3D7f2E12945987aD44CB7d06CE420aF23948a290',1);

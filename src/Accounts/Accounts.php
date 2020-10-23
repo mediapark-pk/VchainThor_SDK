@@ -12,14 +12,15 @@ class Accounts
         $this->http = $http;
     }
 
-    public function GetVTA_VTHO_SHA(string $address):array
+    public function GetVetVthoSha(string $address):array
     {
-        $vta = $this->AccountsAddress($address);
-        $sha = $this->SHaAccountaddress($address);
-        return array('VET balance'=>$vta['balance'],'VTHO (energy)'=>$vta['energy'],'SHA balance'=>$sha);
+        $vta = $this->GetVET($address);
+        unset($vta['hasCode']);
+        $vta['SHA'] = $this->GetSHA($address);
+        return $vta;
     }
 
-    public function SHaAccountAddress(string $address):float
+    public function GetSHA(string $address):float
     {
         if(substr($address,0,2)=='0x'){
             $address = substr($address,2);
@@ -30,13 +31,14 @@ class Accounts
         return $res =(float) (hexdec($response['data'])/pow(10,18));
     }
 
-    public function AccountsAddress(string $address){
+    public function GetVET(string $address){
         if ($address=="") {
             throw new VchainAccountsException("Address must not empty");
         }
         $account =  $this->http->sendRequest('accounts/'.$address);
         $account['balance'] = hexdec($account['balance'])/pow(10,18);
         $account['energy'] = hexdec($account['energy'])/pow(10,18);
+        unset($account['hasCode']);
         return $account;
     }
 
