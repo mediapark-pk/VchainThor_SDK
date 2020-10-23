@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace VchainThor;
 
+use Comely\Http\Exception\HttpRequestException;
+use Comely\Http\Exception\HttpResponseException;
+use Comely\Http\Exception\SSL_Exception;
 use Comely\Http\Request;
 use Vchainthor\Exception\VchainAPIException;
 
@@ -46,8 +49,10 @@ class HttpClient
      * @param array $headers
      * @param string $httpMethod
      * @return array
-     * @throws SkyCoinAPIException
-     * @throws \Comely\Http\Exception\HttpException
+     * @throws VchainAPIException
+     * @throws HttpRequestException
+     * @throws HttpResponseException
+     * @throws SSL_Exception
      */
     public function sendRequest(string $endpoint, array $params = [], array $headers = [], string $httpMethod = "GET"): array
     {

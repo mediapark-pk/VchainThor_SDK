@@ -1,7 +1,11 @@
 <?php
 namespace VchainThor\Accounts;
 
+use Comely\Http\Exception\HttpRequestException;
+use Comely\Http\Exception\HttpResponseException;
+use Comely\Http\Exception\SSL_Exception;
 use Vchainthor\Exception\VchainAccountsException;
+use Vchainthor\Exception\VchainAPIException;
 use VchainThor\HttpClient;
 
 class Accounts
@@ -12,6 +16,15 @@ class Accounts
         $this->http = $http;
     }
 
+    /**
+     * @param string $address
+     * @return array
+     * @throws HttpRequestException
+     * @throws HttpResponseException
+     * @throws SSL_Exception
+     * @throws VchainAPIException
+     * @throws VchainAccountsException
+     */
     public function GetVetVthoSha(string $address):array
     {
         $vta = $this->GetVET($address);
@@ -20,6 +33,14 @@ class Accounts
         return $vta;
     }
 
+    /**
+     * @param string $address
+     * @return float
+     * @throws HttpRequestException
+     * @throws HttpResponseException
+     * @throws SSL_Exception
+     * @throws VchainAPIException
+     */
     public function GetSHA(string $address):float
     {
         if(substr($address,0,2)=='0x'){

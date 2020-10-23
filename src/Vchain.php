@@ -10,14 +10,6 @@ use VchainThor\Transaction\Transaction;
 
 class Vchain
 {
-    /** @var string */
-    private string $ip;
-    /** @var int */
-    private ?int $port = NULL;
-    /** @var string */
-    private string $username;
-    /** @var string */
-    private string $password;
     /** @var Transaction */
     private Transaction $transaction;
     /** @var Accounts */
@@ -29,15 +21,16 @@ class Vchain
     public const ECDSA_CURVE = Curves::SECP256K1;
     /** @var int Fixed length of private keys in bits */
     public const PRIVATE_KEY_BITS = 256;
-    /** @var string BIP32 MKD HMAC Key */
-    public const HD_MKD_HMAC_KEY = "Bitcoin seed";
 
     /** @var KeyPairFactory */
     private KeyPairFactory $keyPairFactory;
 
     /**
      * Vchain constructor.
-     * @param Generic $generic
+     * @param string $ip
+     * @param int|null $port
+     * @param string|null $username
+     * @param string|null $password
      */
     public function __construct(string $ip, ?int $port = NULL, ?string $username = "", ?string $password = "")
     {

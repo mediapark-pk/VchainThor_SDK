@@ -18,7 +18,7 @@ use Comely\DataTypes\BcNumber;
 use Comely\DataTypes\Buffer\Base16;
 use Comely\DataTypes\Buffer\Binary;
 use Comely\DataTypes\Strings\ASCII;
-use FurqanSiddiqui\Ethereum\Exception\RLPEncodeException;
+use VchainThor\Exception\RLPEncodeException;
 use VchainThor\Math\Integers;
 use VchainThor\RLP\RLPEncoded;
 
@@ -125,7 +125,7 @@ class RLP
 
     /**
      * @param $arg
-     * @return array|string[]
+     * @return array
      * @throws RLPEncodeException
      */
     private function _digest($arg): array
