@@ -16,8 +16,7 @@
   },
   "autoload": {
     "psr-4": {
-      "VchainThor\\": ["src/"],
-      "FurqanSiddiqui\\Ethereum\\": ["ethereum/"]
+      "VchainThor\\": ["src/"]
     }
   }
 }

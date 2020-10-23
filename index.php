@@ -13,6 +13,13 @@ $port = 8669;
 
 $Vchain = new Vchain($localUrl, $port);
 try {
+    $pri = $Vchain->keyPairs()->privateKeyFromEntropy(hash("sha256","youshouldcare"));
+    echo "<h1>Private Key</h1><br>";
+    var_dump($pri->base16()->value());
+    echo "<br>";
+    echo "<h1>Public Key</h1><br>";
+    var_dump($pri->publicKey()->getAccountAddress());
+    exit();
     $eth = new \FurqanSiddiqui\Ethereum\Ethereum();
     $prv = $eth->keyPairs()->privateKeyFromEntropy(hash("sha256","whoc1are1s"));
     echo '<h1>Private Key</h1>';
