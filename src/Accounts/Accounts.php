@@ -25,7 +25,7 @@ class Accounts
      * @throws VchainAPIException
      * @throws VchainAccountsException
      */
-    public function GetVetVthoSha(string $address):array
+    public function GetBalance(string $address):array
     {
         $vta = $this->GetVET($address);
         unset($vta['hasCode']);
