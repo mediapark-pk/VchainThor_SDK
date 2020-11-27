@@ -9,15 +9,14 @@
  * file that was distributed with this source code or visit following link:
  * https://github.com/furqansiddiqui/ethereum-php/blob/master/LICENSE
  */
-
 declare(strict_types=1);
 
-namespace VchainThor\Exception;
+namespace MediaParkpk\VeChainThor\Exception;
 
 /**
  * Class RLPEncodeException
  * @package FurqanSiddiqui\Ethereum\Exception
  */
-class RLPEncodeException extends VchainException
+class RLPEncodeException extends VeChainThorException
 {
 }

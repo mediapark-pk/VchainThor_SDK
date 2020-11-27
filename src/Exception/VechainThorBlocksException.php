@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace MediaParkpk\VeChainThor\Exception;
 
 /**
- * Class VchainTransactionException
+ * Class VechainThorBlocksException
  * @package Vchain\Exception
  */
-class VchainTransactionException extends VeChainThorException
+class VechainThorBlocksException extends VeChainThorException
 {
 }

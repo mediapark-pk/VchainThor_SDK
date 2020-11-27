@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace MediaParkpk\VeChainThor\Transaction;
 
-use MediaParkpk\VeChainThor\Exception\VchainTransactionException;
+use MediaParkpk\VeChainThor\Exception\VechainThorTransactionException;
 use MediaparkPK\VechainThor\HttpClient;
 
 class Transaction{
@@ -15,21 +15,21 @@ class Transaction{
 
     public function Transactions(string $id){
         if ($id=='') {
-            throw new VchainTransactionException("id must not empty");
+            throw new VechainThorTransactionException("id must not empty");
         }
         return $this->http->sendRequest('transactions/'.$id);
     }
 
     public function TransactionsReceipt(string $id){
         if ($id=='') {
-            throw new VchainTransactionException("id must not empty");
+            throw new VechainThorTransactionException("id must not empty");
         }
         return $this->http->sendRequest('transactions/'.$id."/receipt");
     }
 
     public function TransactionPost(string $encodedtx){
         if (!$encodedtx) {
-            throw new VchainTransactionException("array must not empty");
+            throw new VechainThorTransactionException("array must not empty");
         }
         $param = array("raw"=> '0x'.$encodedtx);
         return $this->http->sendRequest('transactions',$param,[],"POST");
