@@ -1,4 +1,6 @@
 {
+  "name": "mediapark-pk/vechain-thor-sdk",
+  "description": "VeChainThor SDK",
   "require": {
     "comely-io/http": "1.0.47",
     "web3p/rlp": "^0.3.2",
@@ -16,7 +18,7 @@
   },
   "autoload": {
     "psr-4": {
-      "VchainThor\\": ["src/"]
+      "MediaParkPK\\VeChainThor\\": ["src/"]
     }
   }
 }

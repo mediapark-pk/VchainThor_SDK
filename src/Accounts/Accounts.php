@@ -1,16 +1,26 @@
 <?php
-namespace VchainThor\Accounts;
+declare(strict_types=1);
 
-use Comely\Http\Exception\HttpRequestException;
-use Comely\Http\Exception\HttpResponseException;
-use Comely\Http\Exception\SSL_Exception;
-use Vchainthor\Exception\VchainAccountsException;
-use Vchainthor\Exception\VchainAPIException;
+namespace MediaParkpk\VeChainThor\Accounts;
+
+
 use VchainThor\HttpClient;
 
+/**
+ * Class Accounts
+ * @package MediaParkpk\VeChainThor\Accounts
+ */
 class Accounts
 {
+    /**
+     * @var HttpClient
+     */
     private HttpClient $http;
+
+    /**
+     * Accounts constructor.
+     * @param HttpClient $http
+     */
     public function __construct(HttpClient $http)
     {
         $this->http = $http;
@@ -52,6 +62,10 @@ class Accounts
         return $res =(float) (hexdec($response['data'])/pow(10,18));
     }
 
+    /**
+     * @param string $address
+     * @return mixed
+     */
     public function GetVET(string $address){
         if ($address=="") {
             throw new VchainAccountsException("Address must not empty");
@@ -63,6 +77,10 @@ class Accounts
         return $account;
     }
 
+    /**
+     * @param string $address
+     * @return mixed
+     */
     public function AccountsCode(string $address){
         if ($address=="") {
             throw new VchainAccountsException("Address must not empty");
@@ -70,7 +88,12 @@ class Accounts
         return $this->http->sendRequest('accounts/'.$address."/code");
     }
 
-    public function AccountsStorage(string $address,string $key){
+    /**
+     * @param string $address
+     * @param string $key
+     * @return mixed
+     */
+    public function AccountsStorage(string $address, string $key){
         if ($address=="") {
             throw new VchainAccountsException("Address must not empty");
         }

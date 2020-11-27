@@ -1,13 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace VchainThor\Exception;
-
+namespace MediaParkpk\VeChainThor\Exception;
 /**
  * Class VchainException
- * @package Vchain\Exception
+ * @package MediaParkpk\VeChainThor\Exception
  */
-class VchainException extends \Exception
+class VeChainThorException extends \Exception
 {
     /**
      * @param string $method

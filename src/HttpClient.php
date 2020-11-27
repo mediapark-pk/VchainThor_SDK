@@ -1,8 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace VchainThor;
+namespace MediaparkPK\VechainThor;
 
+use Comely\Http\Exception\HttpException;
 use Comely\Http\Exception\HttpRequestException;
 use Comely\Http\Exception\HttpResponseException;
 use Comely\Http\Exception\SSL_Exception;
@@ -53,46 +54,55 @@ class HttpClient
      * @throws HttpRequestException
      * @throws HttpResponseException
      * @throws SSL_Exception
+     * @throws \MediaParkpk\VeChainThor\Exception\VechainThorAPIException
      */
     public function sendRequest(string $endpoint, array $params = [], array $headers = [], string $httpMethod = "GET"): array
     {
-        $url = $this->generateUri($endpoint);
-        $req = new Request($httpMethod, $url);
+        try {
+            $url = $this->generateUri($endpoint);
+            $req = new Request($httpMethod, $url);
 
-        // Set Request Headers
-        $req->headers()->set("accept", "application/json");
+            // Set Request Headers
+            $req->headers()->set("accept", "application/json");
 
-        // Set Dynamic Headers
-        if ($headers) {
-            foreach ($headers as $key => $value) {
-                $req->headers()->set($key, $value);
+            // Set Dynamic Headers
+            if ($headers) {
+                foreach ($headers as $key => $value) {
+                    $req->headers()->set($key, $value);
+                }
+            } else {
+                $req->headers()->set("content-type", "application/json");
             }
-        } else {
-            $req->headers()->set("content-type", "application/json");
-        }
 
-        // Set Request Body/Params
-        if ($params) {
-            $req->payload()->use($params);
-        }
-
-        $request = $req->curl();
-        if ($this->username && $this->password) {
-            $request->auth()->basic($this->username, $this->password);
-        }
-
-        // Send The Request
-        $res = $request->send();
-        $errCode = $res->code();
-        if ($errCode !== 200) {
-            $errMsg = $res->body()->value();
-            if ($errMsg) {
-                $errMsg = trim(strval(explode("-", $errMsg)[1] ?? ""));
-                throw new VchainAPIException($errMsg ? $errMsg : sprintf('HTTP Response Code %d', $errCode), $errCode);
+            // Set Request Body/Params
+            if ($params) {
+                $req->payload()->use($params);
             }
+
+            $request = $req->curl();
+            if ($this->username && $this->password) {
+                $request->auth()->basic($this->username, $this->password);
+            }
+
+            // Send The Request
+            $res = $request->send();
+            $errCode = $res->code();
+            if ($errCode !== 200) {
+                $errMsg = $res->body()->value();
+                if ($errMsg) {
+                    $errMsg = trim(strval(explode("-", $errMsg)[1] ?? ""));
+                    throw new VchainAPIException($errMsg ? $errMsg : sprintf('HTTP Response Code %d', $errCode), $errCode);
+                }
+            }
+
+            return $res->payload()->array();
+        }
+        catch (HttpException $e)
+        {
+            throw new \MediaParkpk\VeChainThor\Exception\VechainThorAPIException(sprintf('[%s][%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
         }
 
-        return $res->payload()->array();
+
     }
 
     /**
