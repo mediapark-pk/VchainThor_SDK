@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace MediaParkpk\VeChainThor\Transaction;
 
 use MediaParkpk\VeChainThor\Exception\VechainThorTransactionException;
-use MediaparkPK\VechainThor\HttpClient;
+use MediaParkpk\VeChainThor\HttpClient;
 
 class Transaction{
     private HttpClient $http;

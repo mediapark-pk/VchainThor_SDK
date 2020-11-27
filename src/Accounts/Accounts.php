@@ -3,8 +3,7 @@ declare(strict_types=1);
 
 namespace MediaParkpk\VeChainThor\Accounts;
 
-
-use VchainThor\HttpClient;
+use MediaParkpk\VeChainThor\HttpClient;
 
 /**
  * Class Accounts
@@ -46,10 +45,10 @@ class Accounts
     /**
      * @param string $address
      * @return float
-     * @throws HttpRequestException
-     * @throws HttpResponseException
-     * @throws SSL_Exception
-     * @throws VchainAPIException
+     * @throws \Comely\Http\Exception\HttpRequestException
+     * @throws \Comely\Http\Exception\HttpResponseException
+     * @throws \Comely\Http\Exception\SSL_Exception
+     * @throws \MediaParkpk\VeChainThor\Exception\VechainThorAPIException
      */
     public function GetSHA(string $address):float
     {
