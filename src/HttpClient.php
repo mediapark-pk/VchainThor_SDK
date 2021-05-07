@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace MediaparkPK\VechainThor;
+namespace MediaParkPK\VechainThor;
 
 use Comely\Http\Exception\HttpException;
 use Comely\Http\Exception\HttpRequestException;
 use Comely\Http\Exception\HttpResponseException;
 use Comely\Http\Exception\SSL_Exception;
 use Comely\Http\Request;
-use MediaParkpk\VeChainThor\Exception\VechainThorAPIException;
+use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
 use Vchainthor\Exception\VchainAPIException;
 
 /**

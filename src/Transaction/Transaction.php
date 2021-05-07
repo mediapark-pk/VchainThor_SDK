@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace MediaParkpk\VeChainThor\Transaction;
+namespace MediaParkPK\VeChainThor\Transaction;
 
-use MediaParkpk\VeChainThor\Exception\VechainThorTransactionException;
-use MediaParkpk\VeChainThor\HttpClient;
+use MediaParkPK\VeChainThor\Exception\VechainThorTransactionException;
+use MediaParkPK\VeChainThor\HttpClient;
 
 class Transaction{
     private HttpClient $http;

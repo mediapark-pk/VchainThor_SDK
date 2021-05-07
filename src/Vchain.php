@@ -3,7 +3,7 @@
 namespace VchainThor;
 
 use FurqanSiddiqui\BIP32\ECDSA\Curves;
-use VchainThor\Accounts\Accounts;
+use MediaParkPK\VeChainThor\Accounts\Account;
 use VchainThor\Blocks\Blocks;
 use VchainThor\KeyPair\KeyPairFactory;
 use VchainThor\Transaction\Transaction;
@@ -36,7 +36,7 @@ class Vchain
     {
         $httpClient = new HttpClient($ip, $port, $username, $password);
         $this->transaction = new Transaction($httpClient);
-        $this->account = new Accounts($httpClient);
+        $this->account = new Account($httpClient);
         $this->blocks = new Blocks($httpClient);
         $this->keyPairFactory = new KeyPairFactory($this);
     }

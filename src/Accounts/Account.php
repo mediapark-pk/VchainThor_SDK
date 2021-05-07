@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace MediaParkpk\VeChainThor\Accounts;
+namespace MediaParkPK\VeChainThor\Accounts;
 
-use MediaParkpk\VeChainThor\HttpClient;
+use MediaParkPK\VeChainThor\HttpClient;
 
 /**
- * Class Accounts
- * @package MediaParkpk\VeChainThor\Accounts
+ * Class Account
+ * @package MediaParkpk\VeChainThor\Account
  */
-class Accounts
+class Account
 {
     /**
      * @var HttpClient
@@ -17,7 +17,7 @@ class Accounts
     private HttpClient $http;
 
     /**
-     * Accounts constructor.
+     * Account constructor.
      * @param HttpClient $http
      */
     public function __construct(HttpClient $http)

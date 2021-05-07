@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace VchainThor\Exception;
 
 
-use MediaParkpk\VeChainThor\Exception\VeChainThorException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorException;
 
 /**
  * Class IncompleteTxException
