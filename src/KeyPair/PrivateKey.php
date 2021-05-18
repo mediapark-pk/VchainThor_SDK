@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\KeyPair;
+namespace MediaParkPK\VeChainThor\KeyPair;
 
 use Comely\DataTypes\Buffer\Base16;
 use FurqanSiddiqui\BIP32\ECDSA\Curves;
@@ -20,7 +20,7 @@ use FurqanSiddiqui\Ethereum\Ethereum;
 use FurqanSiddiqui\Ethereum\Transactions\RLPEncodedTx;
 use FurqanSiddiqui\Ethereum\Transactions\TxBuilder;
 use PrivateKey\VchainThor;
-use VchainThor\Vchain;
+use MediaParkPK\VeChainThor\Vchain;
 
 /**
  * Class PrivateKey

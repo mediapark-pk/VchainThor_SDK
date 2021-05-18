@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\KeyPair;
+namespace MediaParkPK\VeChainThor\KeyPair;
 
 use Comely\DataTypes\Buffer\Base16;
 use Comely\DataTypes\Buffer\Binary;
@@ -21,7 +21,7 @@ use FurqanSiddiqui\ECDSA\ECC\EllipticCurveInterface;
 use FurqanSiddiqui\Ethereum\Accounts\Account;
 use FurqanSiddiqui\Ethereum\Ethereum;
 use FurqanSiddiqui\Ethereum\Packages\Keccak\Keccak;
-use VchainThor\Vchain;
+use MediaParkPK\VeChainThor\Vchain;
 
 /**
  * Class PublicKey
@@ -81,7 +81,7 @@ class PublicKey extends \FurqanSiddiqui\BIP32\KeyPair\PublicKey
             ->append($pubKeyX->binary())
             ->append($pubKeyY->binary());
 
-        $keccakHash = new Binary(\VchainThor\Keccak::hash($pubKey->raw(), 256, true));
+        $keccakHash = new Binary(\MediaParkPK\VeChainThor\Keccak::hash($pubKey->raw(), 256, true));
         return $keccakHash->substr(-20)->base16()->hexits(true);
     }
 }

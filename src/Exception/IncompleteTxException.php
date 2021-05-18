@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace VchainThor\Exception;
+namespace MediaParkPK\VeChainThor\Exception;
 
 
 use MediaParkPK\VeChainThor\Exception\VeChainThorException;

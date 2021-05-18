@@ -1,16 +1,16 @@
 <?php
 declare(strict_types=1);
 
-namespace VchainThor\Transaction;
+namespace MediaParkPK\VeChainThor\Transaction;
 
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
 use Exception;
 use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
-use VchainThor\Exception\IncompleteTxException;
-use VchainThor\Keccak;
-use VchainThor\Math\Integers;
-use VchainThor\RLP;
+use MediaParkPK\VeChainThor\Exception\IncompleteTxException;
+use MediaParkPK\VeChainThor\Keccak;
+use MediaParkPK\VeChainThor\Math\Integers;
+use MediaParkPK\VeChainThor\RLP;
 
 class TxBuilder
 {

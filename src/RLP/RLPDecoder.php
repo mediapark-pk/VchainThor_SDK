@@ -12,10 +12,10 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\RLP;
+namespace MediaParkPK\VeChainThor\RLP;
 
-use VchainThor\Math\Integers;
-use VchainThor\RLP;
+use MediaParkPK\VeChainThor\Math\Integers;
+use MediaParkPK\VeChainThor\RLP;
 
 
 /**

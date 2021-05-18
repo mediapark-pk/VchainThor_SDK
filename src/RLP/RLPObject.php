@@ -12,10 +12,10 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\RLP {
+namespace MediaParkPK\VeChainThor\RLP {
 
-    use VchainThor\RLP;
-    use VchainThor\RLP\RLPObject\RLPObjectProp;
+    use MediaParkPK\VeChainThor\RLP;
+    use MediaParkPK\VeChainThor\RLP\RLPObject\RLPObjectProp;
 
     /**
      * Class RLPObject
@@ -107,9 +107,9 @@ namespace VchainThor\RLP {
     }
 }
 
-namespace VchainThor\RLP\RLPObject {
+namespace MediaParkPK\VeChainThor\RLP\RLPObject {
 
-    use VchainThor\RLP\RLPObject;
+    use MediaParkPK\VeChainThor\RLP\RLPObject;
 
     /**
      * Class RLPObjectProp

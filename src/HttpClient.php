@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace MediaParkPK\VechainThor;
+namespace MediaParkPK\VeChainThor;
 
 use Comely\Http\Exception\HttpException;
 use Comely\Http\Exception\HttpRequestException;
@@ -9,7 +9,7 @@ use Comely\Http\Exception\HttpResponseException;
 use Comely\Http\Exception\SSL_Exception;
 use Comely\Http\Request;
 use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
-use Vchainthor\Exception\VchainAPIException;
+use MediaParkPK\VeChainThor\Exception\VchainAPIException;
 
 /**
  * Class HttpClient
@@ -51,10 +51,6 @@ class HttpClient
      * @param array $headers
      * @param string $httpMethod
      * @return array
-     * @throws VchainAPIException
-     * @throws HttpRequestException
-     * @throws HttpResponseException
-     * @throws SSL_Exception
      * @throws VechainThorAPIException
      */
     public function sendRequest(string $endpoint, array $params = [], array $headers = [], string $httpMethod = "GET"): array
@@ -92,7 +88,7 @@ class HttpClient
                 $errMsg = $res->body()->value();
                 if ($errMsg) {
                     $errMsg = trim(strval(explode("-", $errMsg)[1] ?? ""));
-                    throw new VchainAPIException($errMsg ? $errMsg : sprintf('HTTP Response Code %d', $errCode), $errCode);
+                    throw new VechainThorAPIException($errMsg ? $errMsg : sprintf('HTTP Response Code %d', $errCode), $errCode);
                 }
             }
 

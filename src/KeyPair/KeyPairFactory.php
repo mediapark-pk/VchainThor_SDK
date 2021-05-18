@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\KeyPair;
+namespace MediaParkPK\VeChainThor\KeyPair;
 
 use Comely\DataTypes\Buffer\Base16;
 use Comely\DataTypes\Buffer\Binary;
@@ -20,7 +20,7 @@ use Comely\DataTypes\DataTypes;
 use FurqanSiddiqui\BIP32\ECDSA\Curves;
 use FurqanSiddiqui\BIP39\Mnemonic;
 use FurqanSiddiqui\Ethereum\Exception\KeyPairException;
-use VchainThor\Vchain;
+use MediaParkPK\VeChainThor\Vchain;
 
 
 /**

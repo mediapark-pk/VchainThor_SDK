@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\RLP;
+namespace MediaParkPK\VeChainThor\RLP;
 
 
 /**

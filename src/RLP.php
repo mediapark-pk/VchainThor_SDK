@@ -12,15 +12,15 @@
 
 declare(strict_types=1);
 
-namespace VchainThor;
+namespace MediaParkPK\VeChainThor;
 
 use Comely\DataTypes\BcNumber;
 use Comely\DataTypes\Buffer\Base16;
 use Comely\DataTypes\Buffer\Binary;
 use Comely\DataTypes\Strings\ASCII;
-use VchainThor\Exception\RLPEncodeException;
-use VchainThor\Math\Integers;
-use VchainThor\RLP\RLPEncoded;
+use MediaParkPK\VeChainThor\Exception\RLPEncodeException;
+use MediaParkPK\VeChainThor\Math\Integers;
+use MediaParkPK\VeChainThor\RLP\RLPEncoded;
 
 
 /**

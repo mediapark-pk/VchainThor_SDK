@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace MediaParkPK\VeChainThor\Accounts;
 
+use MediaParkPK\VeChainThor\Exception\VechainThorAccountsException;
+use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
 use MediaParkPK\VeChainThor\HttpClient;
 
 /**
@@ -28,11 +30,8 @@ class Account
     /**
      * @param string $address
      * @return array
-     * @throws HttpRequestException
-     * @throws HttpResponseException
-     * @throws SSL_Exception
-     * @throws VchainAPIException
-     * @throws VchainAccountsException
+     * @throws VechainThorAPIException
+     * @throws VechainThorAccountsException
      */
     public function GetBalance(string $address):array
     {
@@ -45,29 +44,29 @@ class Account
     /**
      * @param string $address
      * @return float
-     * @throws \Comely\Http\Exception\HttpRequestException
-     * @throws \Comely\Http\Exception\HttpResponseException
-     * @throws \Comely\Http\Exception\SSL_Exception
-     * @throws \MediaParkpk\VeChainThor\Exception\VechainThorAPIException
+     * @throws VechainThorAPIException
      */
     public function GetSHA(string $address):float
     {
         if(substr($address,0,2)=='0x'){
             $address = substr($address,2);
         }
-        $addres = "0x"."70a08231".str_pad($address,64,'0',STR_PAD_LEFT);
-        $param = array('data'=>$addres);
+        $address = "0x"."70a08231".str_pad($address,64,'0',STR_PAD_LEFT);
+        $param = array('data'=>$address);
         $response = $this->http->sendRequest('accounts/0xa1bcfa20a82eca70a5af5420b11bc53a279024ec',$param,[],"POST");
-        return $res =(float) (hexdec($response['data'])/pow(10,18));
+        return (float) (hexdec($response['data'])/pow(10,18));
     }
 
     /**
      * @param string $address
-     * @return mixed
+     * @return array
+     * @throws VechainThorAPIException
+     * @throws VechainThorAccountsException
      */
-    public function GetVET(string $address){
+    public function GetVET(string $address): array
+    {
         if ($address=="") {
-            throw new VchainAccountsException("Address must not empty");
+            throw new VechainThorAccountsException("Address must not empty");
         }
         $account =  $this->http->sendRequest('accounts/'.$address);
         $account['balance'] = hexdec($account['balance'])/pow(10,18);
@@ -78,11 +77,14 @@ class Account
 
     /**
      * @param string $address
-     * @return mixed
+     * @return array
+     * @throws VechainThorAPIException
+     * @throws VechainThorAccountsException
      */
-    public function AccountsCode(string $address){
+    public function AccountsCode(string $address): array
+    {
         if ($address=="") {
-            throw new VchainAccountsException("Address must not empty");
+            throw new VechainThorAccountsException("Address must not empty");
         }
         return $this->http->sendRequest('accounts/'.$address."/code");
     }
@@ -90,14 +92,17 @@ class Account
     /**
      * @param string $address
      * @param string $key
-     * @return mixed
+     * @return array
+     * @throws VechainThorAPIException
+     * @throws VechainThorAccountsException
      */
-    public function AccountsStorage(string $address, string $key){
+    public function AccountsStorage(string $address, string $key): array
+    {
         if ($address=="") {
-            throw new VchainAccountsException("Address must not empty");
+            throw new VechainThorAccountsException("Address must not empty");
         }
         if ($key=="") {
-            throw new VchainAccountsException("Key must not empty");
+            throw new VechainThorAccountsException("Key must not empty");
         }
         return $this->http->sendRequest('accounts/'.$address."/storage/".$key);
     }

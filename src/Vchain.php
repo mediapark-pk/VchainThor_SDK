@@ -1,21 +1,21 @@
 <?php
 
-namespace VchainThor;
+namespace MediaParkPK\VeChainThor;
 
 use FurqanSiddiqui\BIP32\ECDSA\Curves;
 use MediaParkPK\VeChainThor\Accounts\Account;
-use VchainThor\Blocks\Blocks;
-use VchainThor\KeyPair\KeyPairFactory;
-use VchainThor\Transaction\Transaction;
+use MediaParkPK\VeChainThor\Blocks\Block;
+use MediaParkPK\VeChainThor\KeyPair\KeyPairFactory;
+use MediaParkPK\VeChainThor\Transaction\Transaction;
 
 class Vchain
 {
     /** @var Transaction */
     private Transaction $transaction;
-    /** @var Accounts */
-    Private Accounts $account;
-    /** @var Blocks */
-    private Blocks $blocks;
+    /** @var Account  */
+    Private Account $account;
+    /** @var Block */
+    private Block $blocks;
 
     /** @var int ECDSA/ECC curve identifier */
     public const ECDSA_CURVE = Curves::SECP256K1;
@@ -37,7 +37,7 @@ class Vchain
         $httpClient = new HttpClient($ip, $port, $username, $password);
         $this->transaction = new Transaction($httpClient);
         $this->account = new Account($httpClient);
-        $this->blocks = new Blocks($httpClient);
+        $this->blocks = new Block($httpClient);
         $this->keyPairFactory = new KeyPairFactory($this);
     }
 
@@ -52,23 +52,23 @@ class Vchain
     /**
      * @return Transaction
      */
-    public function Tranaction():Transaction
+    public function Transaction():Transaction
     {
         return $this->transaction;
     }
 
     /**
-     * @return Accounts
+     * @return Account
      */
-    public function Accounts():Accounts
+    public function Accounts(): Account
     {
         return $this->account;
     }
 
     /**
-     * @return Blocks
+     * @return Block
      */
-    public function Blocks():Blocks
+    public function Blocks() : Block
     {
         return $this->blocks;
     }

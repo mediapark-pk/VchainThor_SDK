@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\KeyPair;
+namespace MediaParkPK\VeChainThor\KeyPair;
 
 use Comely\DataTypes\Buffer\Base16;
 use FurqanSiddiqui\Ethereum\Ethereum;

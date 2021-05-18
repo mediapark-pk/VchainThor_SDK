@@ -17,7 +17,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor;
+namespace MediaParkPK\VeChainThor;
 
 /**
  * Class Keccak

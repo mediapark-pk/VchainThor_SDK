@@ -12,7 +12,7 @@
 
 declare(strict_types=1);
 
-namespace VchainThor\Math;
+namespace MediaParkPK\VeChainThor\Math;
 
 use Comely\DataTypes\BcNumber;
 
