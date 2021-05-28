@@ -26,24 +26,46 @@ class BlockFactory{
     }
 
     /**
-     * @param string|int $block
-     * @param bool $expanded
+     * @param string $id
+     * @param string $expanded
      * @return Block
      * @throws VeChainThorAPIException
      * @throws VechainThorBlocksException
      */
-    private function getBlock($block,bool $expanded=true): Block
+    public function getBlockById(string $id, string $expanded): Block
     {
-        if ($block == '') {
+        return $this->getBlock($id, $expanded);
+    }
+
+    /**
+     * @param int $num
+     * @param string $expanded
+     * @return Block
+     * @throws VeChainThorAPIException
+     * @throws VechainThorBlocksException
+     */
+    public function getBlockByNumber(int $num, string $expanded): Block
+    {
+        return $this->getBlock($num, $expanded);
+    }
+
+    /**
+     * @param $blockIdentifier
+     * @param string $expanded
+     * @return Block
+     * @throws VeChainThorAPIException
+     * @throws VechainThorBlocksException
+     */
+    public function getBlock($blockIdentifier, string $expanded = "true"): Block
+    {
+        if ($blockIdentifier == '') {
             throw new VechainThorBlocksException("First Args must not empty");
         }
 
-        $expanded = $expanded ? "true" : "false";
-
-        $result = $this->http->sendRequest("blocks/$block?expanded=$expanded");
+        $result = $this->http->sendRequest("blocks/$blockIdentifier?expanded=$expanded");
 
         if (!is_array($result) || !$result) {
-            throw VeChainThorAPIException::unexpectedResultType("blocks", "object", gettype($result));
+            throw VeChainThorAPIException::unexpectedResultType("blocks/blockIdentifier?expanded=bool", "object", gettype($result));
         }
 
         return new Block($result);
