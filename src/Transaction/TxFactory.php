@@ -12,15 +12,15 @@ use MediaParkPK\VeChainThor\Exception\VeChainThorTransactionException;
 use MediaParkPK\VeChainThor\HttpClient;
 
 /**
- * Class Transaction
- * @package MediaParkPK\VeChainThor\Transaction
+ * Class TxFactory
+ * @package MediaParkPK\VeChainThor\TxFactory
  */
-class Transaction{
+class TxFactory{
     /** @var HttpClient  */
     private HttpClient $http;
 
     /**
-     * Transaction constructor.
+     * TxFactory constructor.
      * @param HttpClient $http
      */
     public function __construct(HttpClient $http)
@@ -30,13 +30,13 @@ class Transaction{
 
     /**
      * @param string $txId
-     * @return array
+     * @return Transaction
      * @throws VeChainThorAPIException
      */
-    public function getTransactionById(string $txId): array
+    public function getTransactionById(string $txId): Transaction
     {
         if (!$txId) {
-            throw new \InvalidArgumentException("Transaction id is required");
+            throw new \InvalidArgumentException("TxFactory id is required");
         }
 
         $result = $this->http->sendRequest("transactions/$txId");
@@ -45,7 +45,7 @@ class Transaction{
             throw VeChainThorAPIException::unexpectedResultType("transactions/txId", "array", gettype($result));
         }
 
-        return $result;
+        return New Transaction($result);
         }
 
     /**
@@ -56,7 +56,7 @@ class Transaction{
     public function transactionsReceipt(string $id) : array
     {
         if (!$id) {
-            throw new \InvalidArgumentException("Transaction id is required");
+            throw new \InvalidArgumentException("TxFactory id is required");
         }
         return $this->http->sendRequest("transactions/$id/receipt");
     }
