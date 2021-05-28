@@ -26,18 +26,21 @@ class BlockFactory{
     }
 
     /**
-     * @param string $block
+     * @param string|int $block
      * @param bool $expanded
      * @return Block
      * @throws VeChainThorAPIException
      * @throws VechainThorBlocksException
      */
-    public function getBlock(string $block,bool $expanded=true): Block
+    private function getBlock($block,bool $expanded=true): Block
     {
         if ($block == '') {
             throw new VechainThorBlocksException("First Args must not empty");
         }
-        $result = $this->http->sendRequest('blocks/' . $block . "?expanded=" . (($expanded == 1) ? 'true' : 'false'));
+
+        $expanded = $expanded ? "true" : "false";
+
+        $result = $this->http->sendRequest("blocks/$block?expanded=$expanded");
 
         if (!is_array($result) || !$result) {
             throw VeChainThorAPIException::unexpectedResultType("blocks", "object", gettype($result));
@@ -45,5 +48,4 @@ class BlockFactory{
 
         return new Block($result);
     }
-
 }
