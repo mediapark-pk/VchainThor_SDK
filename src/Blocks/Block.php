@@ -1,42 +1,68 @@
 <?php
-namespace MediaParkPK\VeChainThor\Blocks;
+declare(strict_types=1);
 
-use Comely\Http\Exception\HttpRequestException;
-use Comely\Http\Exception\HttpResponseException;
-use Comely\Http\Exception\SSL_Exception;
-use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
-use MediaParkPK\VeChainThor\Exception\VechainThorBlocksException;
-use MediaParkPK\VeChainThor\HttpClient;
+namespace MediaParkPK\VeChainThor\Blocks;
 
 /**
  * Class Block
- * @package VchainThor\Blocks\
+ * @package MediaParkPK\VeChainThor\Blocks
  */
-class Block{
-    /** @var HttpClient  */
-    private HttpClient $http;
+class Block
+{
+    /** @var int|mixed  */
+    public int $number;
+    /** @var string|mixed  */
+    public string $id;
+    /** @var int|mixed  */
+    public int $size;
+    /** @var string|mixed  */
+    public string $parentID;
+    /** @var int|mixed  */
+    public int $timestamp;
+    /** @var int|mixed  */
+    public int $gasLimit;
+    /** @var string|mixed  */
+    public string $beneficiary;
+    /** @var int|mixed  */
+    public int $gasUsed;
+    /** @var int|mixed  */
+    public int $totalScore;
+    /** @var string|mixed  */
+    public string $txsRoot;
+    /** @var int|mixed  */
+    public int $txsFeatures;
+    /** @var string|mixed  */
+    public string $stateRoot;
+    /** @var string|mixed  */
+    public string $receiptsRoot;
+    /** @var string|mixed  */
+    public string $signer;
+    /** @var bool|mixed  */
+    public bool $isTrunk;
+    /** @var array|mixed  */
+    public array $transactions;
 
     /**
      * Block constructor.
-     * @param HttpClient $http
+     * @param array $data
      */
-    public function __construct(HttpClient $http)
+    public function __construct(array $data)
     {
-        $this->http = $http;
-    }
-
-    /**
-     * @param string $block
-     * @param bool $expanded
-     * @return array
-     * @throws VeChainThorAPIException
-     * @throws VechainThorBlocksException
-     */
-    public function getBlock(string $block,bool $expanded=true): array
-    {
-        if ($block=='') {
-            throw new VechainThorBlocksException("First Args must not empty");
-        }
-        return $this->http->sendRequest('blocks/'.$block."?expanded=".(($expanded==1)?'true':'false'));
+        $this->number = $data["number"];
+        $this->id = $data["id"];
+        $this->size = $data["size"];
+        $this->parentID = $data["parentID"];
+        $this->timestamp = $data["timestamp"];
+        $this->gasLimit = $data["gasLimit"];
+        $this->beneficiary = $data["beneficiary"];
+        $this->gasUsed = $data["gasUsed"];
+        $this->totalScore = $data["totalScore"];
+        $this->txsRoot = $data["txsRoot"];
+        $this->txsFeatures = $data["txsFeatures"];
+        $this->stateRoot = $data["stateRoot"];
+        $this->receiptsRoot = $data["receiptsRoot"];
+        $this->signer = $data["signer"];
+        $this->isTrunk = $data["isTrunk"];
+        $this->transactions = $data["transactions"];
     }
 }
