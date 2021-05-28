@@ -52,7 +52,7 @@ class VeChain
     /**
      * @return TxFactory
      */
-    public function transaction() : TxFactory
+    public function transactions() : TxFactory
     {
         return $this->transaction;
     }
