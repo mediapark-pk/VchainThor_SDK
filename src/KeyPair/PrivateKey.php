@@ -20,7 +20,7 @@ use FurqanSiddiqui\Ethereum\Ethereum;
 use FurqanSiddiqui\Ethereum\Transactions\RLPEncodedTx;
 use FurqanSiddiqui\Ethereum\Transactions\TxBuilder;
 use PrivateKey\VchainThor;
-use MediaParkPK\VeChainThor\Vchain;
+use MediaParkPK\VeChainThor\VeChain;
 
 /**
  * Class PrivateKey
@@ -28,22 +28,22 @@ use MediaParkPK\VeChainThor\Vchain;
  */
 class PrivateKey extends \FurqanSiddiqui\BIP32\KeyPair\PrivateKey
 {
-    /** @var Vchain */
-    private Vchain $eth;
+    /** @var VeChain */
+    private VeChain $eth;
 
     /**
      * PrivateKey constructor.
-     * @param Vchain $eth
+     * @param VeChain $eth
      * @param Base16 $entropy
      * @param HDKey|null $extendedKey
      */
-    public function __construct(Vchain $eth, Base16 $entropy, ?HDKey $extendedKey = null)
+    public function __construct(VeChain $eth, Base16 $entropy, ?HDKey $extendedKey = null)
     {
         $this->eth = $eth;
         parent::__construct($entropy, $extendedKey);
 
         if (!$extendedKey) {
-            $this->set("curve", Vchain::ECDSA_CURVE);
+            $this->set("curve", VeChain::ECDSA_CURVE);
         }
     }
 

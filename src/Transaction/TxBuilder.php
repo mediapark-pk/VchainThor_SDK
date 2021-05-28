@@ -224,7 +224,7 @@ class TxBuilder
 
     public function setNonce(): void
     {
-        $this->nonce = $this->randomNumber(12);
+        $this->nonce = $this->randomNumber(32);
     }
 
     /**

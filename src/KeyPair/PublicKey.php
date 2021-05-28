@@ -21,7 +21,7 @@ use FurqanSiddiqui\ECDSA\ECC\EllipticCurveInterface;
 use FurqanSiddiqui\Ethereum\Accounts\Account;
 use FurqanSiddiqui\Ethereum\Ethereum;
 use FurqanSiddiqui\Ethereum\Packages\Keccak\Keccak;
-use MediaParkPK\VeChainThor\Vchain;
+use MediaParkPK\VeChainThor\VeChain;
 
 /**
  * Class PublicKey
@@ -30,20 +30,20 @@ use MediaParkPK\VeChainThor\Vchain;
 class PublicKey extends \FurqanSiddiqui\BIP32\KeyPair\PublicKey
 {
     /** @var Ethereum */
-    private Vchain $eth;
+    private VeChain $eth;
     /** @var Account|null */
     private ?Account $account = null;
 
     /**
      * PublicKey constructor.
-     * @param Vchain $eth
+     * @param VeChain $eth
      * @param PrivateKeyInterface|null $privateKey
      * @param EllipticCurveInterface|null $curve
      * @param Base16|null $publicKey
      * @param bool|null $pubKeyArgIsCompressed
      * @throws \FurqanSiddiqui\BIP32\Exception\PublicKeyException
      */
-    public function __construct(Vchain $eth, ?PrivateKeyInterface $privateKey, ?EllipticCurveInterface $curve = null, ?Base16 $publicKey = null, ?bool $pubKeyArgIsCompressed = null)
+    public function __construct(VeChain $eth, ?PrivateKeyInterface $privateKey, ?EllipticCurveInterface $curve = null, ?Base16 $publicKey = null, ?bool $pubKeyArgIsCompressed = null)
     {
         $this->eth = $eth;
         parent::__construct($privateKey, $curve, $publicKey, $pubKeyArgIsCompressed);

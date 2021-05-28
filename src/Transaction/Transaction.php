@@ -6,8 +6,9 @@ namespace MediaParkPK\VeChainThor\Transaction;
 use Comely\Http\Exception\HttpRequestException;
 use Comely\Http\Exception\HttpResponseException;
 use Comely\Http\Exception\SSL_Exception;
-use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
-use MediaParkPK\VeChainThor\Exception\VechainThorTransactionException;
+use http\Exception\InvalidArgumentException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorTransactionException;
 use MediaParkPK\VeChainThor\HttpClient;
 
 /**
@@ -28,51 +29,48 @@ class Transaction{
     }
 
     /**
-     * @param string $id
+     * @param string $txId
      * @return array
-     * @throws VechainThorTransactionException
-     * @throws HttpRequestException
-     * @throws HttpResponseException
-     * @throws SSL_Exception
-     * @throws VechainThorAPIException
+     * @throws VeChainThorAPIException
      */
-    public function Transactions(string $id): array
+    public function getTransactionById(string $txId): array
     {
-        if ($id=='') {
-            throw new VechainThorTransactionException("id must not empty");
+        if (!$txId) {
+            throw new \InvalidArgumentException("Transaction id is required");
         }
-        return $this->http->sendRequest('transactions/'.$id);
-    }
+
+        $result = $this->http->sendRequest("transactions/$txId");
+
+        if (!is_array($result) || !$result) {
+            throw VeChainThorAPIException::unexpectedResultType("transactions/txId", "array", gettype($result));
+        }
+
+        return $result;
+        }
 
     /**
      * @param string $id
      * @return array
-     * @throws HttpRequestException
-     * @throws HttpResponseException
-     * @throws SSL_Exception
-     * @throws VechainThorAPIException
-     * @throws VechainThorTransactionException
+     * @throws VeChainThorAPIException
      */
-    public function TransactionsReceipt(string $id){
-        if ($id=='') {
-            throw new VechainThorTransactionException("id must not empty");
+    public function TransactionsReceipt(string $id) : array
+    {
+        if (!$id) {
+            throw new \InvalidArgumentException("Transaction id is required");
         }
-        return $this->http->sendRequest('transactions/'.$id."/receipt");
+        return $this->http->sendRequest("transactions/$id/receipt");
     }
 
     /**
      * @param string $encodedTx
      * @return array
-     * @throws HttpRequestException
-     * @throws HttpResponseException
-     * @throws SSL_Exception
-     * @throws VechainThorAPIException
-     * @throws VechainThorTransactionException
+     * @throws VeChainThorAPIException
+     * @throws VeChainThorTransactionException
      */
     public function TransactionPost(string $encodedTx): array
     {
         if (!$encodedTx) {
-            throw new VechainThorTransactionException("array must not empty");
+            throw new VeChainThorTransactionException("array must not empty");
         }
         $param = array("raw"=> '0x'.$encodedTx);
         return $this->http->sendRequest('transactions',$param,[],"POST");

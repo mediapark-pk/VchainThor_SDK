@@ -20,7 +20,7 @@ use Comely\DataTypes\DataTypes;
 use FurqanSiddiqui\BIP32\ECDSA\Curves;
 use FurqanSiddiqui\BIP39\Mnemonic;
 use FurqanSiddiqui\Ethereum\Exception\KeyPairException;
-use MediaParkPK\VeChainThor\Vchain;
+use MediaParkPK\VeChainThor\VeChain;
 
 
 /**
@@ -29,12 +29,12 @@ use MediaParkPK\VeChainThor\Vchain;
  */
 class KeyPairFactory
 {
-    /** @var Vchain */
-    private Vchain $eth;
+    /** @var VeChain */
+    private VeChain $eth;
 
     /**
      * KeyPairFactory constructor.
-     * @param Vchain $eth
+     * @param VeChain $eth
      */
     public function __construct( $eth)
     {
@@ -47,7 +47,7 @@ class KeyPairFactory
      */
     public function generateSecurePrivateKey(): PrivateKey
     {
-        $byteLength = Vchain::PRIVATE_KEY_BITS / 8;
+        $byteLength = VeChain::PRIVATE_KEY_BITS / 8;
 
         try {
             $randomBytes = random_bytes($byteLength);

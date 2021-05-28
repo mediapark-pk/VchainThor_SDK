@@ -4,7 +4,7 @@ namespace MediaParkPK\VeChainThor\Blocks;
 use Comely\Http\Exception\HttpRequestException;
 use Comely\Http\Exception\HttpResponseException;
 use Comely\Http\Exception\SSL_Exception;
-use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
 use MediaParkPK\VeChainThor\Exception\VechainThorBlocksException;
 use MediaParkPK\VeChainThor\HttpClient;
 
@@ -29,10 +29,10 @@ class Block{
      * @param string $block
      * @param bool $expanded
      * @return array
-     * @throws VechainThorAPIException
+     * @throws VeChainThorAPIException
      * @throws VechainThorBlocksException
      */
-    public function Blocks(string $block,bool $expanded=true): array
+    public function getBlock(string $block,bool $expanded=true): array
     {
         if ($block=='') {
             throw new VechainThorBlocksException("First Args must not empty");

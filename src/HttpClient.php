@@ -8,7 +8,7 @@ use Comely\Http\Exception\HttpRequestException;
 use Comely\Http\Exception\HttpResponseException;
 use Comely\Http\Exception\SSL_Exception;
 use Comely\Http\Request;
-use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
 use MediaParkPK\VeChainThor\Exception\VchainAPIException;
 
 /**
@@ -51,7 +51,7 @@ class HttpClient
      * @param array $headers
      * @param string $httpMethod
      * @return array
-     * @throws VechainThorAPIException
+     * @throws VeChainThorAPIException
      */
     public function sendRequest(string $endpoint, array $params = [], array $headers = [], string $httpMethod = "GET"): array
     {
@@ -88,7 +88,7 @@ class HttpClient
                 $errMsg = $res->body()->value();
                 if ($errMsg) {
                     $errMsg = trim(strval(explode("-", $errMsg)[1] ?? ""));
-                    throw new VechainThorAPIException($errMsg ? $errMsg : sprintf('HTTP Response Code %d', $errCode), $errCode);
+                    throw new VeChainThorAPIException($errMsg ? $errMsg : sprintf('HTTP Response Code %d', $errCode), $errCode);
                 }
             }
 
@@ -96,7 +96,7 @@ class HttpClient
         }
         catch (HttpException $e)
         {
-            throw new VechainThorAPIException(sprintf('[%s][%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            throw new VeChainThorAPIException(sprintf('[%s][%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
         }
 
 

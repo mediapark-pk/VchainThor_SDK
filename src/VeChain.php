@@ -8,7 +8,7 @@ use MediaParkPK\VeChainThor\Blocks\Block;
 use MediaParkPK\VeChainThor\KeyPair\KeyPairFactory;
 use MediaParkPK\VeChainThor\Transaction\Transaction;
 
-class Vchain
+class VeChain
 {
     /** @var Transaction */
     private Transaction $transaction;
@@ -26,7 +26,7 @@ class Vchain
     private KeyPairFactory $keyPairFactory;
 
     /**
-     * Vchain constructor.
+     * VeChain constructor.
      * @param string $ip
      * @param int|null $port
      * @param string|null $username

@@ -18,7 +18,9 @@
   },
   "autoload": {
     "psr-4": {
-      "MediaParkPK\\VeChainThor\\": ["src/"]
+      "MediaParkPK\\VeChainThor\\": [
+        "src"
+      ]
     }
   }
 }

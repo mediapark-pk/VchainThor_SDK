@@ -5,10 +5,10 @@ namespace MediaParkPK\VeChainThor\Exception;
 
 
 /**
- * Class VechainThorAPIException
+ * Class VeChainThorAPIException
  * @package VchainThor\Exception
  */
-class VechainThorAPIException extends VeChainThorException
+class VeChainThorAPIException extends VeChainThorException
 {
     public static function unexpectedResultType(string $method, string $expected, string $got): self
     {

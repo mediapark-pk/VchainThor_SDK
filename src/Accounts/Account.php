@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace MediaParkPK\VeChainThor\Accounts;
 
-use MediaParkPK\VeChainThor\Exception\VechainThorAccountsException;
-use MediaParkPK\VeChainThor\Exception\VechainThorAPIException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorAccountsException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
+use MediaParkPK\VeChainThor\Exception\VeChainThorException;
 use MediaParkPK\VeChainThor\HttpClient;
+use MediaParkPK\VeChainThor\Validate;
 
 /**
  * Class Account
@@ -30,23 +32,24 @@ class Account
     /**
      * @param string $address
      * @return array
-     * @throws VechainThorAPIException
-     * @throws VechainThorAccountsException
+     * @throws VeChainThorAPIException
+     * @throws VeChainThorAccountsException
+     * @throws VeChainThorException
      */
-    public function GetBalance(string $address):array
+    public function getBalance(string $address):array
     {
-        $vta = $this->GetVET($address);
+        $vta = $this->getVET($address);
         unset($vta['hasCode']);
-        $vta['SHA'] = $this->GetSHA($address);
+        $vta['SHA'] = $this->getSHA($address);
         return $vta;
     }
 
     /**
      * @param string $address
      * @return float
-     * @throws VechainThorAPIException
+     * @throws VeChainThorAPIException
      */
-    public function GetSHA(string $address):float
+    public function getSHA(string $address):float
     {
         if(substr($address,0,2)=='0x'){
             $address = substr($address,2);
@@ -60,13 +63,17 @@ class Account
     /**
      * @param string $address
      * @return array
-     * @throws VechainThorAPIException
-     * @throws VechainThorAccountsException
+     * @throws VeChainThorAPIException
+     * @throws VeChainThorAccountsException|VeChainThorException
      */
-    public function GetVET(string $address): array
+    public function getVET(string $address): array
     {
+        if (!Validate::Address($address)) {
+            throw new VeChainThorException("invalid address provided to getVet");
+        }
+
         if ($address=="") {
-            throw new VechainThorAccountsException("Address must not empty");
+            throw new VeChainThorAccountsException("Address must not empty");
         }
         $account =  $this->http->sendRequest('accounts/'.$address);
         $account['balance'] = hexdec($account['balance'])/pow(10,18);
@@ -78,13 +85,13 @@ class Account
     /**
      * @param string $address
      * @return array
-     * @throws VechainThorAPIException
-     * @throws VechainThorAccountsException
+     * @throws VeChainThorAPIException
+     * @throws VeChainThorAccountsException
      */
-    public function AccountsCode(string $address): array
+    public function accountsCode(string $address): array
     {
         if ($address=="") {
-            throw new VechainThorAccountsException("Address must not empty");
+            throw new VeChainThorAccountsException("Address must not empty");
         }
         return $this->http->sendRequest('accounts/'.$address."/code");
     }
@@ -93,16 +100,17 @@ class Account
      * @param string $address
      * @param string $key
      * @return array
-     * @throws VechainThorAPIException
-     * @throws VechainThorAccountsException
+     * @throws VeChainThorAPIException
+     * @throws VeChainThorAccountsException|VeChainThorException
      */
-    public function AccountsStorage(string $address, string $key): array
+    public function accountsStorage(string $address, string $key): array
     {
-        if ($address=="") {
-            throw new VechainThorAccountsException("Address must not empty");
+        if(!Validate::Address($address)) {
+            throw new VeChainThorException("Invalid address provided to accountsStorage");
         }
+
         if ($key=="") {
-            throw new VechainThorAccountsException("Key must not empty");
+            throw new VeChainThorAccountsException("Key must not empty");
         }
         return $this->http->sendRequest('accounts/'.$address."/storage/".$key);
     }
