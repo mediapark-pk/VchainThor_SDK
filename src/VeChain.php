@@ -4,18 +4,18 @@ namespace MediaParkPK\VeChainThor;
 
 use FurqanSiddiqui\BIP32\ECDSA\Curves;
 use MediaParkPK\VeChainThor\Accounts\Account;
-use MediaParkPK\VeChainThor\Blocks\Block;
+use MediaParkPK\VeChainThor\Blocks\BlockFactory;
 use MediaParkPK\VeChainThor\KeyPair\KeyPairFactory;
-use MediaParkPK\VeChainThor\Transaction\Transaction;
+use MediaParkPK\VeChainThor\Transaction\TxFactory;
 
 class VeChain
 {
-    /** @var Transaction */
-    private Transaction $transaction;
+    /** @var TxFactory */
+    private TxFactory $transaction;
     /** @var Account  */
     Private Account $account;
-    /** @var Block */
-    private Block $blocks;
+    /** @var BlockFactory */
+    private BlockFactory $blocks;
 
     /** @var int ECDSA/ECC curve identifier */
     public const ECDSA_CURVE = Curves::SECP256K1;
@@ -35,9 +35,9 @@ class VeChain
     public function __construct(string $ip, ?int $port = NULL, ?string $username = "", ?string $password = "")
     {
         $httpClient = new HttpClient($ip, $port, $username, $password);
-        $this->transaction = new Transaction($httpClient);
+        $this->transaction = new TxFactory($httpClient);
         $this->account = new Account($httpClient);
-        $this->blocks = new Block($httpClient);
+        $this->blocks = new BlockFactory($httpClient);
         $this->keyPairFactory = new KeyPairFactory($this);
     }
 
@@ -50,9 +50,9 @@ class VeChain
     }
 
     /**
-     * @return Transaction
+     * @return TxFactory
      */
-    public function Transaction():Transaction
+    public function transaction() : TxFactory
     {
         return $this->transaction;
     }
@@ -60,15 +60,15 @@ class VeChain
     /**
      * @return Account
      */
-    public function Accounts(): Account
+    public function accounts(): Account
     {
         return $this->account;
     }
 
     /**
-     * @return Block
+     * @return BlockFactory
      */
-    public function Blocks() : Block
+    public function blocks() : BlockFactory
     {
         return $this->blocks;
     }
