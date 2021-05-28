@@ -9,15 +9,15 @@ use MediaParkPK\VeChainThor\Exception\VechainThorBlocksException;
 use MediaParkPK\VeChainThor\HttpClient;
 
 /**
- * Class Block
+ * Class BlockFactory
  * @package VchainThor\Blocks\
  */
-class Block{
+class BlockFactory{
     /** @var HttpClient  */
     private HttpClient $http;
 
     /**
-     * Block constructor.
+     * BlockFactory constructor.
      * @param HttpClient $http
      */
     public function __construct(HttpClient $http)
@@ -28,15 +28,22 @@ class Block{
     /**
      * @param string $block
      * @param bool $expanded
-     * @return array
+     * @return Block
      * @throws VeChainThorAPIException
      * @throws VechainThorBlocksException
      */
-    public function getBlock(string $block,bool $expanded=true): array
+    public function getBlock(string $block,bool $expanded=true): Block
     {
-        if ($block=='') {
+        if ($block == '') {
             throw new VechainThorBlocksException("First Args must not empty");
         }
-        return $this->http->sendRequest('blocks/'.$block."?expanded=".(($expanded==1)?'true':'false'));
+        $result = $this->http->sendRequest('blocks/' . $block . "?expanded=" . (($expanded == 1) ? 'true' : 'false'));
+
+        if (!is_array($result) || !$result) {
+            throw VeChainThorAPIException::unexpectedResultType("blocks", "object", gettype($result));
+        }
+
+        return new Block($result);
     }
+
 }
