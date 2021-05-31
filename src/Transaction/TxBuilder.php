@@ -6,7 +6,6 @@ namespace MediaParkPK\VeChainThor\Transaction;
 use Comely\DataTypes\Buffer\Base16;
 use deemru\Blake2b;
 use Exception;
-use FurqanSiddiqui\ECDSA\Curves\Secp256k1;
 use FurqanSiddiqui\ECDSA\ECDSA;
 use MediaParkPK\VeChainThor\Exception\IncompleteTxException;
 use MediaParkPK\VeChainThor\Keccak;
@@ -64,7 +63,7 @@ class TxBuilder
      * @return string
      * @throws IncompleteTxException
      */
-    public static function decToHex($int)
+    public static function decToHex($int): string
     {
         if ($int > 0xff) {
             throw new IncompleteTxException('Greater Then 256');
@@ -109,9 +108,9 @@ class TxBuilder
      * @param int blockRef
      * @throws IncompleteTxException
      */
-    public function setBlockRef(int $CurrentblockNumber): void
+    public function setBlockRef(int $currentBlockNumber): void
     {
-        $nextBlockNumber = $CurrentblockNumber + 18;
+        $nextBlockNumber = $currentBlockNumber + 18;
         $ch = Integers::Pack_UInt_BE($nextBlockNumber);
         $ch = str_pad($ch, 8, "0", STR_PAD_LEFT);
         $ch = str_split($ch, 2);
@@ -240,7 +239,7 @@ class TxBuilder
      * @return string
      * @throws IncompleteTxException
      */
-    public function build_tx()
+    public function build_tx(): string
     {
         $rlp = new RLP();
         $txBodyObj = new RLP\RLPObject();
@@ -351,7 +350,7 @@ class TxBuilder
      * @param Base16 $privateKey
      * @return string
      */
-    public function sign(Base16 $message, Base16 $privateKey)
+    public function sign(Base16 $message, Base16 $privateKey): string
     {
         $secp = ECDSA::Secp256k1();
 
@@ -372,13 +371,13 @@ class TxBuilder
     private function calculatePayloadData(string $to, string $methodType, int $amount): string
     {
         $keccak_hash = Keccak::hash($methodType, 256);
-        $first_8_keccek_hash = substr($keccak_hash, 0, 8);
+        $first_8_keccak_hash = substr($keccak_hash, 0, 8);
         if (substr($to, 0, 2) == '0x') {
             $to = substr($to, 2);
         }
         $to_with_pad = str_pad($to, 64, "0", STR_PAD_LEFT);
         $value_power_hex = dechex($amount * pow(10, 18));
         $value_send = str_pad($value_power_hex, 64, "0", STR_PAD_LEFT);
-        return $first_8_keccek_hash . $to_with_pad . $value_send;
+        return $first_8_keccak_hash . $to_with_pad . $value_send;
     }
 }
