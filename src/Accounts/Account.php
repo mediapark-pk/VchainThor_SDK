@@ -36,28 +36,38 @@ class Account
      * @throws VeChainThorAccountsException
      * @throws VeChainThorException
      */
-    public function getBalance(string $address):array
+    public function getBalance(string $contractAddress, string $address): array
     {
         $vta = $this->getVET($address);
-        unset($vta['hasCode']);
-        $vta['SHA'] = $this->getSHA($address);
+        $vta['SHA'] = $this->getSHA($contractAddress, $address);
         return $vta;
     }
 
     /**
+     * @param string $contractAddress
      * @param string $address
      * @return float
      * @throws VeChainThorAPIException
+     * @throws VeChainThorException
      */
-    public function getSHA(string $address):float
+    public function getSHA(string $contractAddress, string $address): float
     {
-        if(substr($address,0,2)=='0x'){
+        if (!Validate::Address($address)) {
+            throw new VeChainThorException("invalid address provided to getSHA");
+        }
+
+        if(substr($address,0,2) == '0x'){
             $address = substr($address,2);
         }
-        $address = "0x"."70a08231".str_pad($address,64,'0',STR_PAD_LEFT);
-        $param = array('data'=>$address);
-        $response = $this->http->sendRequest('accounts/0xa1bcfa20a82eca70a5af5420b11bc53a279024ec',$param,[],"POST");
-        return (float) (hexdec($response['data'])/pow(10,18));
+
+        $address = "0x" ."70a08231". str_pad($address,64,'0',STR_PAD_LEFT);
+
+        $params = [
+            'data' => $address
+        ];
+
+        $result = $this->http->sendRequest("accounts/$contractAddress", $params, [],"POST");
+        return (float) (hexdec($result['data'])/pow(10,18));
     }
 
     /**
@@ -69,17 +79,20 @@ class Account
     public function getVET(string $address): array
     {
         if (!Validate::Address($address)) {
-            throw new VeChainThorException("invalid address provided to getVet");
+            throw new VeChainThorException("invalid address provided to getVET");
         }
 
-        if ($address=="") {
-            throw new VeChainThorAccountsException("Address must not empty");
+        $result =  $this->http->sendRequest("accounts/$address");
+
+        if (!is_array($result) || !$result) {
+            throw VeChainThorAPIException::unexpectedResultType("accounts/{address}", "object", gettype($result));
         }
-        $account =  $this->http->sendRequest('accounts/'.$address);
-        $account['balance'] = hexdec($account['balance'])/pow(10,18);
-        $account['energy'] = hexdec($account['energy'])/pow(10,18);
-        unset($account['hasCode']);
-        return $account;
+
+        $result['balance'] = hexdec($result['balance'])/pow(10,18);
+        $result['energy'] = hexdec($result['energy'])/pow(10,18);
+        unset($result['hasCode']);
+
+        return $result;
     }
 
     /**
@@ -87,13 +100,21 @@ class Account
      * @return array
      * @throws VeChainThorAPIException
      * @throws VeChainThorAccountsException
+     * @throws VeChainThorException
      */
     public function accountsCode(string $address): array
     {
-        if ($address=="") {
-            throw new VeChainThorAccountsException("Address must not empty");
+        if (!Validate::Address($address)) {
+            throw new VeChainThorException("invalid address provided to accountsCode");
         }
-        return $this->http->sendRequest('accounts/'.$address."/code");
+
+        $result = $this->http->sendRequest("accounts/$address/code");
+
+        if (!is_array($result) || !$result) {
+            throw VeChainThorAPIException::unexpectedResultType("accounts/{address}/code", "object", gettype($result));
+        }
+
+        return $result;
     }
 
     /**
@@ -109,9 +130,12 @@ class Account
             throw new VeChainThorException("Invalid address provided to accountsStorage");
         }
 
-        if ($key=="") {
-            throw new VeChainThorAccountsException("Key must not empty");
+        $result = $this->http->sendRequest("accounts/$address/storage/$key");
+
+        if (!is_array($result) || !$result) {
+            throw VeChainThorAPIException::unexpectedResultType("accounts/{address}/storage/{key}", "object", gettype($result));
         }
-        return $this->http->sendRequest('accounts/'.$address."/storage/".$key);
+
+        return $result;
     }
 }
