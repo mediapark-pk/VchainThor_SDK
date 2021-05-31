@@ -3,10 +3,6 @@ declare(strict_types=1);
 
 namespace MediaParkPK\VeChainThor\Transaction;
 
-use Comely\Http\Exception\HttpRequestException;
-use Comely\Http\Exception\HttpResponseException;
-use Comely\Http\Exception\SSL_Exception;
-use http\Exception\InvalidArgumentException;
 use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
 use MediaParkPK\VeChainThor\Exception\VeChainThorTransactionException;
 use MediaParkPK\VeChainThor\HttpClient;
@@ -72,7 +68,9 @@ class TxFactory{
         if (!$encodedTx) {
             throw new VeChainThorTransactionException("array must not empty");
         }
+
         $param = array("raw"=> '0x'.$encodedTx);
+
         return $this->http->sendRequest('transactions',$param,[],"POST");
     }
 }
