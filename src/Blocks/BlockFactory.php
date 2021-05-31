@@ -1,11 +1,7 @@
 <?php
 namespace MediaParkPK\VeChainThor\Blocks;
 
-use Comely\Http\Exception\HttpRequestException;
-use Comely\Http\Exception\HttpResponseException;
-use Comely\Http\Exception\SSL_Exception;
 use MediaParkPK\VeChainThor\Exception\VeChainThorAPIException;
-use MediaParkPK\VeChainThor\Exception\VechainThorBlocksException;
 use MediaParkPK\VeChainThor\HttpClient;
 
 /**
@@ -30,9 +26,8 @@ class BlockFactory{
      * @param string $expanded
      * @return Block
      * @throws VeChainThorAPIException
-     * @throws VechainThorBlocksException
      */
-    public function getBlockById(string $id, string $expanded): Block
+    public function getBlockById(string $id, string $expanded = "true"): Block
     {
         return $this->getBlock($id, $expanded);
     }
@@ -42,9 +37,8 @@ class BlockFactory{
      * @param string $expanded
      * @return Block
      * @throws VeChainThorAPIException
-     * @throws VechainThorBlocksException
      */
-    public function getBlockByNumber(int $num, string $expanded): Block
+    public function getBlockByNumber(int $num, string $expanded = "true"): Block
     {
         return $this->getBlock($num, $expanded);
     }
@@ -54,14 +48,9 @@ class BlockFactory{
      * @param string $expanded
      * @return Block
      * @throws VeChainThorAPIException
-     * @throws VechainThorBlocksException
      */
     public function getBlock($blockIdentifier, string $expanded = "true"): Block
     {
-        if ($blockIdentifier == '') {
-            throw new VechainThorBlocksException("First Args must not empty");
-        }
-
         $result = $this->http->sendRequest("blocks/$blockIdentifier?expanded=$expanded");
 
         if (!is_array($result) || !$result) {
