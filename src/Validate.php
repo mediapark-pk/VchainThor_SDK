@@ -15,7 +15,7 @@ class Validate
      */
     public static function Address($address) : bool
     {
-        if (is_string($address) && preg_match('/^[a-zA-Z0-9]{8,256}$/', $address)) {
+        if (is_string($address) && preg_match('/^[a-zA-Z0-9]{42}$/', $address)) {
             return true;
         }
 
